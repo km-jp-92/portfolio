@@ -79,6 +79,5 @@ MVPリリース時に作っていたいもの
 - 「発表者になる」ボタンを押す
 - フロント側で、ボタンが押されたかどうかを使ってフラグを切り替える。押されていれば自分のスクロール位置がActionCableを通じて全ブラウザに送信される。押されていなければ追随する。
 
-■ 画面遷移図
-  [画面遷移図](https://www.figma.com/design/2qsrpcBYgcrwG8Qu5mSlK0/%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?node-id=0-1&t=zvUiTj4WbvR7EkHH-1)
-  
+■ 画面遷移図  
+  [画面遷移図（Figmaへのリンク）](https://www.figma.com/design/2qsrpcBYgcrwG8Qu5mSlK0/%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?node-id=0-1&t=zvUiTj4WbvR7EkHH-1)
