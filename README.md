@@ -81,3 +81,6 @@ MVPリリース時に作っていたいもの
 
 ■ 画面遷移図  
   [画面遷移図（Figmaへのリンク）](https://www.figma.com/design/2qsrpcBYgcrwG8Qu5mSlK0/%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?node-id=0-1&t=zvUiTj4WbvR7EkHH-1)
+
+■ ER図  
+  [ER図（Gyazoへのリンク）](https://gyazo.com/c2e19d25b40e80c8017aa3bd3e6b6fad)
