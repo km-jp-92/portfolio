@@ -10,8 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 0) do
+ActiveRecord::Schema[7.2].define(version: 2025_11_04_075201) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "document_groups", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "password_digest", null: false
+    t.string "token"
+    t.datetime "token_expires_at"
+    t.string "reset_token"
+    t.datetime "reset_token_expires_at"
+    t.string "upload_url"
+    t.datetime "upload_url_expires_at"
+    t.string "view_url"
+    t.datetime "view_url_expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_document_groups_on_email"
+    t.index ["reset_token"], name: "index_document_groups_on_reset_token", unique: true
+    t.index ["token"], name: "index_document_groups_on_token", unique: true
+  end
+
+  create_table "documents", force: :cascade do |t|
+    t.bigint "document_group_id", null: false
+    t.string "file_path", null: false
+    t.string "file_name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["document_group_id"], name: "index_documents_on_document_group_id"
+  end
+
+  add_foreign_key "documents", "document_groups", on_delete: :cascade
 end
