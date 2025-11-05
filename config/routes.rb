@@ -1,6 +1,15 @@
 Rails.application.routes.draw do
   root "document_groups#new"
-  resources :document_groups, only: [ :new, :create ]
+  resources :document_groups, only: [ :new, :create ] do
+    # パスワード設定ページ（トークンでアクセス）
+    get "password/edit/:token", to: "document_groups#edit_password", as: :edit_password
+    patch "password/update/:token", to: "document_groups#update_password", as: :update_password
+
+    # グループに紐づくPDF（アップロード・閲覧・削除）
+    resources :documents, only: [:index, :create, :destroy]
+    get "viewer", to: "documents#viewer"
+  end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
