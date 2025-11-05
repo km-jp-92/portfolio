@@ -5,7 +5,7 @@ class DocumentGroupsController < ApplicationController
 
   def create
     @document_group = DocumentGroup.new(document_group_params)
-    
+
     if @document_group.save
       # ここで後でメール送信処理を追加できます
       flash[:notice] = "メールアドレスを保存しました。"
