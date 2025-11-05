@@ -1,15 +1,14 @@
 Rails.application.routes.draw do
   root "document_groups#new"
   resources :document_groups, only: [ :new, :create ] do
-    
     # グループに紐づくPDF（アップロード・閲覧・削除）
     resources :documents, only: [ :index, :create, :destroy ]
     get "viewer", to: "documents#viewer"
   end
 
   # パスワード設定用
-  get  '/document_groups/password/edit/:token',   to: 'document_groups#edit_password',   as: 'edit_password_document_group'
-  patch '/document_groups/password/update/:token', to: 'document_groups#update_password', as: 'update_password_document_group'
+  get "/document_groups/password/edit/:token",   to: "document_groups#edit_password",   as: "edit_password_document_group"
+  patch "/document_groups/password/update/:token", to: "document_groups#update_password", as: "update_password_document_group"
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 

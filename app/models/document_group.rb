@@ -14,9 +14,9 @@ class DocumentGroup < ApplicationRecord
   validate :password_presence_on_update, on: :update
 
   # 小文字英数字8文字以上のフォーマット
-  validates :password, format: { 
-    with: /\A(?=.*[a-z])(?=.*\d)[a-z\d]{8,}\z/, 
-    message: "は小文字英字と数字を含む8文字以上で入力してください" 
+  validates :password, format: {
+    with: /\A(?=.*[a-z])(?=.*\d)[a-z\d]{8,}\z/,
+    message: "は小文字英字と数字を含む8文字以上で入力してください"
   }, on: :update
 
   # トークン自動生成

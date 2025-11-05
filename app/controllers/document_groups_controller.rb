@@ -1,6 +1,6 @@
 class DocumentGroupsController < ApplicationController
-  before_action :set_document_group_by_token, only: [:edit_password, :update_password]
-  
+  before_action :set_document_group_by_token, only: [ :edit_password, :update_password ]
+
   def new
     @document_group = DocumentGroup.new
   end
