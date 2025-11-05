@@ -8,11 +8,16 @@ class DocumentGroupsController < ApplicationController
   def create
     @document_group = DocumentGroup.new(document_group_params)
 
+    # 仮パスワードを自動生成
+    dummy_password = SecureRandom.hex(12)
+    @document_group.password = dummy_password
+    @document_group.password_confirmation = dummy_password
+
     if @document_group.save
       # トークン付きURL生成
       edit_url = edit_password_document_group_url(token: @document_group.token)
-      # TODO: メール送信処理で edit_url を送信
-      flash[:notice] = "メールを確認してください。"
+      DocumentGroupMailer.password_setup(@document_group.email, edit_url).deliver_now
+      flash[:notice] = "メールをご確認ください。"
       redirect_to root_path
     else
       flash.now[:alert] = "メールアドレスの保存に失敗しました。"

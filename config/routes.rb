@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   get  '/document_groups/password/edit/:token',   to: 'document_groups#edit_password',   as: 'edit_password_document_group'
   patch '/document_groups/password/update/:token', to: 'document_groups#update_password', as: 'update_password_document_group'
 
+  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
