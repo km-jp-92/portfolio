@@ -7,7 +7,7 @@ class Document < ApplicationRecord
   private
 
   def file_type_validation
-    if file.attached? && !file.content_type.in?(%w(application/pdf))
+    if file.attached? && !file.content_type.in?(%w[application/pdf])
       errors.add(:file, "はPDFのみアップロード可能です")
     elsif !file.attached?
       errors.add(:file, "を選択してください")

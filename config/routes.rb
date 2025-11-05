@@ -6,7 +6,7 @@ Rails.application.routes.draw do
     patch "password/update/:token", to: "document_groups#update_password", as: :update_password
 
     # グループに紐づくPDF（アップロード・閲覧・削除）
-    resources :documents, only: [:index, :create, :destroy]
+    resources :documents, only: [ :index, :create, :destroy ]
     get "viewer", to: "documents#viewer"
   end
 
