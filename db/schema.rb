@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_11_05_022804) do
+ActiveRecord::Schema[7.2].define(version: 2025_11_05_050407) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -31,8 +31,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_05_022804) do
 
   create_table "documents", force: :cascade do |t|
     t.bigint "document_group_id", null: false
-    t.string "file_path", null: false
-    t.string "file_name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["document_group_id"], name: "index_documents_on_document_group_id"
