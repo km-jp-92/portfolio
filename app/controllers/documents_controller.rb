@@ -1,6 +1,6 @@
 class DocumentsController < ApplicationController
   before_action :set_document_group
-  before_action :authenticate_group_password, only: [:index, :create, :destroy]
+  before_action :authenticate_group_password, only: [ :index, :create, :destroy ]
 
   def index
     @documents = @document_group.documents
