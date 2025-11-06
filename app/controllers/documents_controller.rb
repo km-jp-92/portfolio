@@ -41,6 +41,16 @@ class DocumentsController < ApplicationController
     redirect_to document_group_documents_path(@document_group)
   end
 
+  def viewer
+    @document_group = DocumentGroup.find(params[:document_group_id])
+    @documents = @document_group.documents.order(created_at: :asc)
+    @document = if params[:document_id]
+                  @document_group.documents.find(params[:document_id])
+                else
+                  @documents.first
+                end
+  end
+
   private
 
   def set_document_group
