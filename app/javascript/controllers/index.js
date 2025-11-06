@@ -5,4 +5,8 @@
 import { application } from "./application"
 
 import HelloController from "./hello_controller"
+import PdfViewerController from "./pdf_viewer_controller"
+import PdfSelectorController from "./pdf_selector_controller"
 application.register("hello", HelloController)
+application.register("pdf-viewer", PdfViewerController)
+application.register("pdf-selector", PdfSelectorController)
