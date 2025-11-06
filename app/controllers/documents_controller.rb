@@ -46,9 +46,9 @@ class DocumentsController < ApplicationController
     @documents = @document_group.documents.order(created_at: :asc)
     @document = if params[:document_id]
                   @document_group.documents.find(params[:document_id])
-                else
+    else
                   @documents.first
-                end
+    end
   end
 
   private
