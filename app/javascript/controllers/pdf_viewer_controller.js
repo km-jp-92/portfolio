@@ -1,5 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
-import * as pdfjsLib from "pdfjs-dist";
+import { GlobalWorkerOptions, getDocument } from "pdfjs-dist"
+
+GlobalWorkerOptions.workerSrc = "/assets/pdf.worker.min.mjs";
 
 // controller: pdf-viewer
 export default class extends Controller {
@@ -18,8 +20,12 @@ export default class extends Controller {
     const context = canvas.getContext("2d")
 
     try {
-      // PDFを読み込み
-      const pdf = await pdfjsLib.getDocument(url).promise
+      // PDFを読み込み（CMap 設定を追加）
+      const pdf = await getDocument({
+        url: url,
+        cMapUrl: "/assets/cmaps/", // ブラウザからアクセスできるCMapディレクトリ
+        cMapPacked: true           // 圧縮済み CMap を使う場合は true
+      }).promise
 
       // 1ページ目を取得
       const page = await pdf.getPage(1)
