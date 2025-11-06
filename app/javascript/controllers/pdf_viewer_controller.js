@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import * as pdfjsLib from "pdfjs-dist";
 
 // controller: pdf-viewer
 export default class extends Controller {
