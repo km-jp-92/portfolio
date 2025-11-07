@@ -9,13 +9,13 @@ export default class extends Controller {
   static values = { url: String }
 
   async connect() {
-    this.scale = 2.0
+    this.scale = 1.4
     this.currentPage = 1
 
     try {
       const loadingTask = getDocument({
         url: this.urlValue,
-        // ✅ 日本語PDF対応: CMap設定を追加
+        // 日本語PDF対応: CMap設定を追加
         cMapUrl: "/assets/cmaps/",  // public/assets/cmaps/ に配置
         cMapPacked: true
       })
@@ -37,7 +37,7 @@ export default class extends Controller {
     canvas.height = viewport.height
     canvas.width = viewport.width
 
-    // 見た目のサイズも合わせる（ここが重要）
+    // 見た目のサイズも合わせる
     canvas.style.width = `${viewport.width}px`
     canvas.style.height = `${viewport.height}px`
 
