@@ -16,7 +16,7 @@ export default class extends Controller {
     this.role = null // "presenter", "audience", null
 
     this.setupActionCable()
-    this.setupRoleButtons()
+    this.updateRoleButtonStyles()
 
     try {
       const loadingTask = getDocument({
@@ -50,10 +50,7 @@ export default class extends Controller {
   }
 
   // --- トグルボタン ---
-  setupRoleButtons() {
-    if (!this.hasPresenterBtnTarget || !this.hasAudienceBtnTarget) return
-
-    this.presenterBtnTarget.addEventListener("click", () => {
+    selectPresenter() {
       if (this.role === "presenter") {
         // すでに発表者なら解除
         this.role = null
@@ -63,25 +60,13 @@ export default class extends Controller {
         if (!ok) return
         this.role = "presenter"
       }
-      this.updatePageButtons()
       this.updateRoleButtonStyles()
-    })
+    }
 
-    this.audienceBtnTarget.addEventListener("click", () => {
+    selectAudience() {
       this.role = this.role === "audience" ? null : "audience"
-      this.updatePageButtons()
       this.updateRoleButtonStyles()
-    })
-
-    this.updatePageButtons()
-    this.updateRoleButtonStyles()
-  }
-
-  updatePageButtons() {
-    const disable = this.role === "audience"
-    if (this.hasNextButtonTarget) this.nextButtonTarget.disabled = disable
-    if (this.hasPrevButtonTarget) this.prevButtonTarget.disabled = disable
-  }
+    }
 
   // ボタン色更新
   updateRoleButtonStyles() {

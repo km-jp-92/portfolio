@@ -11,11 +11,4 @@ class PdfSyncChannel < ApplicationCable::Channel
     pdf_id = params[:pdf_id]
     ActionCable.server.broadcast("pdf_sync_#{pdf_id}", data)
   end
-
-  # 発表者がPDFを切り替えたとき（通知用）
-  def pdf_changed_notification(data)
-    # data = { url: "新しいPDFのURL" }
-    pdf_id = params[:pdf_id]
-    ActionCable.server.broadcast("pdf_sync_#{pdf_id}", { pdf_changed: data })
-  end
 end

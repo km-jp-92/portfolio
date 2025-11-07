@@ -28,9 +28,9 @@
   data-pdf-viewer-pdf-id-value="<%= @document.id %>"
   class="flex flex-col items-center bg-white rounded-lg shadow-md max-h-[100vh] overflow-hidden relative"
 >
-
+  <div class="flex items-center space-x-3">
   <!-- 役割トグルボタン -->
-    <div class="flex space-x-3 mb-2">
+    <div class="flex space-x-3">
       <button data-action="click->pdf-viewer#selectPresenter"
               data-pdf-viewer-target="presenterBtn" class="px-3 py-1 bg-blue-500 text-white rounded">発表者になる</button>
       <button data-action="click->pdf-viewer#selectAudience"
@@ -49,6 +49,7 @@
   <!-- ズームボタン -->
     <button data-action="click->pdf-viewer#zoomOut" class="px-3 py-1 bg-red-500 text-white rounded">縮小</button>
     <button data-action="click->pdf-viewer#zoomIn" class="px-3 py-1 bg-green-500 text-white rounded">拡大</button>
+  </div>
   </div>
 
   <!-- PDF描画エリア -->
