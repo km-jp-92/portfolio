@@ -9,7 +9,7 @@ export default class extends Controller {
   static values = { url: String }
 
   async connect() {
-    this.scale = 1.2
+    this.scale = 2.0
     this.currentPage = 1
 
     try {
