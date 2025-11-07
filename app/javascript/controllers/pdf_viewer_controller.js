@@ -54,7 +54,15 @@ export default class extends Controller {
     if (!this.hasPresenterBtnTarget || !this.hasAudienceBtnTarget) return
 
     this.presenterBtnTarget.addEventListener("click", () => {
-      this.role = this.role === "presenter" ? null : "presenter"
+      if (this.role === "presenter") {
+        // すでに発表者なら解除
+        this.role = null
+      } else {
+        // 確認ダイアログ
+        const ok = confirm("本当に発表者になりますか？")
+        if (!ok) return
+        this.role = "presenter"
+      }
       this.updatePageButtons()
       this.updateRoleButtonStyles()
     })
