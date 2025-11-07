@@ -3,14 +3,20 @@ import { GlobalWorkerOptions, getDocument } from "pdfjs-dist"
 
 GlobalWorkerOptions.workerSrc = "/assets/pdf.worker.min.mjs";
 
+import consumer from "../channels/consumer"
+
 // controller: pdf-viewer
 export default class extends Controller {
-  static targets = ["canvas", "pageNumber", "totalPages"]
-  static values = { url: String }
+  static targets = ["canvas", "pageNumber", "totalPages", "nextButton", "prevButton", "presenterBtn", "audienceBtn"]
+  static values = { url: String, pdfId: Number  }
 
   async connect() {
     this.scale = 1.4
     this.currentPage = 1
+    this.role = null // "presenter", "audience", null
+
+    this.setupActionCable()
+    this.setupRoleButtons()
 
     try {
       const loadingTask = getDocument({
@@ -25,6 +31,91 @@ export default class extends Controller {
       this.renderPage(this.currentPage)
     } catch (error) {
       console.error("PDF読み込みエラー:", error)
+    }
+  }
+
+  // --- ページ同期用 ActionCable ---
+  setupActionCable() {
+    if (!this.pdfIdValue) return
+    this.pdfChannel = consumer.subscriptions.create(
+      { channel: "PdfSyncChannel", pdf_id: this.pdfIdValue },
+      {
+        received: (data) => {
+          if (this.role === "audience") {
+            this.changePage(data.page)
+          }
+        }
+      }
+    )
+  }
+
+  // --- トグルボタン ---
+  setupRoleButtons() {
+    if (!this.hasPresenterBtnTarget || !this.hasAudienceBtnTarget) return
+
+    this.presenterBtnTarget.addEventListener("click", () => {
+      this.role = this.role === "presenter" ? null : "presenter"
+      this.updatePageButtons()
+      this.updateRoleButtonStyles()
+    })
+
+    this.audienceBtnTarget.addEventListener("click", () => {
+      this.role = this.role === "audience" ? null : "audience"
+      this.updatePageButtons()
+      this.updateRoleButtonStyles()
+    })
+
+    this.updatePageButtons()
+    this.updateRoleButtonStyles()
+  }
+
+  updatePageButtons() {
+    const disable = this.role === "audience"
+    if (this.hasNextButtonTarget) this.nextButtonTarget.disabled = disable
+    if (this.hasPrevButtonTarget) this.prevButtonTarget.disabled = disable
+  }
+
+  // ボタン色更新
+  updateRoleButtonStyles() {
+    // 発表者ボタン
+    if (this.role === "presenter") {
+      this.presenterBtnTarget.classList.add("bg-blue-500", "text-white")
+      this.presenterBtnTarget.classList.remove("bg-gray-200", "text-black")
+    } else {
+      this.presenterBtnTarget.classList.remove("bg-blue-500", "text-white")
+      this.presenterBtnTarget.classList.add("bg-gray-200", "text-black")
+    }
+
+    // 聴講者ボタン
+    if (this.role === "audience") {
+      this.audienceBtnTarget.classList.add("bg-green-500", "text-white")
+      this.audienceBtnTarget.classList.remove("bg-gray-200", "text-black")
+    } else {
+      this.audienceBtnTarget.classList.remove("bg-green-500", "text-white")
+      this.audienceBtnTarget.classList.add("bg-gray-200", "text-black")
+    }
+  }
+
+  // --- ページ切替 ---
+  async changePage(num) {
+    if (num < 1 || num > this.pdf.numPages) return
+    this.currentPage = num
+    await this.renderPage(num)
+
+    if (this.role === "presenter" && this.pdfChannel) {
+      this.pdfChannel.perform("page_changed", { page: num })
+    }
+  }
+
+  async nextPage() {
+    if (this.currentPage < this.pdf.numPages) {
+      await this.changePage(this.currentPage + 1)
+    }
+  }
+
+  async prevPage() {
+    if (this.currentPage > 1) {
+      await this.changePage(this.currentPage - 1)
     }
   }
 
@@ -44,20 +135,6 @@ export default class extends Controller {
     await page.render({ canvasContext: context, viewport }).promise
 
     this.pageNumberTarget.textContent = num
-  }
-
-  async nextPage() {
-    if (this.currentPage < this.pdf.numPages) {
-      this.currentPage++
-      await this.renderPage(this.currentPage)
-    }
-  }
-
-  async prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--
-      await this.renderPage(this.currentPage)
-    }
   }
 
   async zoomIn() {
