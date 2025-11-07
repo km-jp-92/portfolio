@@ -5,51 +5,68 @@ GlobalWorkerOptions.workerSrc = "/assets/pdf.worker.min.mjs";
 
 // controller: pdf-viewer
 export default class extends Controller {
-  static targets = ["canvas"]
+  static targets = ["canvas", "pageNumber", "totalPages"]
   static values = { url: String }
 
-  // Stimulusの connect() をasync化
   async connect() {
-    if (!window.pdfjsLib) {
-      console.error("PDF.js が読み込まれていません。")
-      return
-    }
+    this.scale = 1.4
+    this.currentPage = 1
 
-    const url = this.urlValue
+    try {
+      const loadingTask = getDocument({
+        url: this.urlValue,
+        // 日本語PDF対応: CMap設定を追加
+        cMapUrl: "/assets/cmaps/",  // public/assets/cmaps/ に配置
+        cMapPacked: true
+      })
+
+      this.pdf = await loadingTask.promise
+      this.totalPagesTarget.textContent = this.pdf.numPages
+      this.renderPage(this.currentPage)
+    } catch (error) {
+      console.error("PDF読み込みエラー:", error)
+    }
+  }
+
+  async renderPage(num) {
+    const page = await this.pdf.getPage(num)
+    const viewport = page.getViewport({ scale: this.scale })
     const canvas = this.canvasTarget
     const context = canvas.getContext("2d")
 
-    try {
-      // PDFを読み込み（CMap 設定を追加）
-      const pdf = await getDocument({
-        url: url,
-        cMapUrl: "/assets/cmaps/", // ブラウザからアクセスできるCMapディレクトリ
-        cMapPacked: true           // 圧縮済み CMap を使う場合は true
-      }).promise
+    canvas.height = viewport.height
+    canvas.width = viewport.width
 
-      // 1ページ目を取得
-      const page = await pdf.getPage(1)
+    // 見た目のサイズも合わせる
+    canvas.style.width = `${viewport.width}px`
+    canvas.style.height = `${viewport.height}px`
 
-      // 拡大倍率を設定
-      const scale = 1.2
-      const viewport = page.getViewport({ scale })
+    await page.render({ canvasContext: context, viewport }).promise
 
-      // CanvasサイズをViewportに合わせる
-      canvas.height = viewport.height
-      canvas.width = viewport.width
+    this.pageNumberTarget.textContent = num
+  }
 
-      // 描画コンテキストを作成（PDF.jsの定型）
-      const renderContext = {
-        canvasContext: context,
-        viewport: viewport
-      }
-
-      // 🖼️ ページを描画
-      await page.render(renderContext).promise
-
-      console.log("✅ PDF描画が完了しました")
-    } catch (error) {
-      console.error("❌ PDF読み込みエラー:", error)
+  async nextPage() {
+    if (this.currentPage < this.pdf.numPages) {
+      this.currentPage++
+      await this.renderPage(this.currentPage)
     }
+  }
+
+  async prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--
+      await this.renderPage(this.currentPage)
+    }
+  }
+
+  async zoomIn() {
+    this.scale *= 1.2
+    await this.renderPage(this.currentPage)
+  }
+
+  async zoomOut() {
+    this.scale /= 1.2
+    await this.renderPage(this.currentPage)
   }
 }
