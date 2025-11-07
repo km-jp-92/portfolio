@@ -1,7 +1,4 @@
-<!-- PDF.js CDN -->
-
-
-<div class="max-w-4xl mx-auto mt-8 space-y-6">
+<div class="w-full mx-auto mt-8 space-y-6">
   <!-- PDF選択セクション -->
   <div 
     data-controller="pdf-selector"
@@ -24,12 +21,31 @@
     </select>
   </div>
 
-  <!-- PDF表示セクション -->
-  <div 
-    data-controller="pdf-viewer"
-    data-pdf-viewer-url-value="<%= url_for(@document.file) %>"
-    class="flex flex-col items-center bg-white p-4 rounded-lg shadow-md"
-  >
+  <!-- PDF表示セクション（1ページずつ表示） -->
+<div 
+  data-controller="pdf-viewer"
+  data-pdf-viewer-url-value="<%= url_for(@document.file) %>"
+  class="flex flex-col items-center bg-white p-4 rounded-lg shadow-md space-y-4 max-h-[85vh] overflow-hidden relative"
+>
+  <!-- ページコントロール -->
+  <div class="flex items-center justify-center space-x-3 mb-2">
+    <button data-action="click->pdf-viewer#prevPage" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">前のページ</button>
+    <span>
+      ページ 
+      <span data-pdf-viewer-target="pageNumber">1</span> /
+      <span data-pdf-viewer-target="totalPages">1</span>
+    </span>
+    <button data-action="click->pdf-viewer#nextPage" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">次のページ</button>
+  </div>
+
+  <!-- PDF描画エリア -->
+  <div class="overflow-auto flex justify-center w-full h-full">
     <canvas data-pdf-viewer-target="canvas" class="border shadow-md"></canvas>
+  </div>
+
+  <!-- ズームボタン -->
+  <div class="flex justify-center space-x-2 mt-3">
+    <button data-action="click->pdf-viewer#zoomOut" class="px-3 py-2 bg-red-500 text-white rounded">縮小</button>
+    <button data-action="click->pdf-viewer#zoomIn" class="px-3 py-2 bg-green-500 text-white rounded">拡大</button>
   </div>
 </div>
