@@ -42,7 +42,6 @@ class DocumentsController < ApplicationController
   end
 
   def viewer
-    @document_group = DocumentGroup.find(params[:document_group_id])
     @documents = @document_group.documents.order(created_at: :asc)
     @document = if params[:document_id]
                   @document_group.documents.find(params[:document_id])

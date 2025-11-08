@@ -16,7 +16,6 @@ export default class extends Controller {
     this.role = null // "presenter", "audience", null
 
     this.setupActionCable()
-    this.updateRoleButtonStyles()
 
     try {
       const loadingTask = getDocument({
