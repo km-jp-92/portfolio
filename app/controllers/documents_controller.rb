@@ -1,6 +1,7 @@
 class DocumentsController < ApplicationController
   before_action :set_document_group
   before_action :authenticate_group_password, only: [ :index, :create, :destroy ]
+  before_action :authenticate_viewer_password, only: [:viewer]
 
   def index
     @documents = @document_group.documents
@@ -68,8 +69,31 @@ class DocumentsController < ApplicationController
       session[:authenticated_document_group_id] = @document_group.id
     else
       # 認証フォーム表示
-      @error = params[:password].present? ? "パスワードが違います" : nil
+      if params[:password].blank?
+        @error = "パスワードを入力してください"
+      elsif !@document_group.authenticate(params[:password])
+        @error = "パスワードが違います"
+      end
+      
       render :password_form
+    end
+  end
+
+  def authenticate_viewer_password
+    if session[:authenticated_viewer_group_id] == @document_group.id
+      return true
+    end
+
+    if params[:password] && @document_group.authenticate(params[:password])
+      session[:authenticated_viewer_group_id] = @document_group.id
+    else
+      if params[:password].blank?
+        @error = "パスワードを入力してください"
+      elsif !@document_group.authenticate(params[:password])
+        @error = "パスワードが違います"
+      end
+
+      render :viewer_password_form
     end
   end
 
