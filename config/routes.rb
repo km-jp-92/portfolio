@@ -8,12 +8,13 @@ Rails.application.routes.draw do
   end
 
   # パスワード設定用
-  get "/document_groups/password/edit/:token",   to: "document_groups#edit_password",   as: "edit_password_document_group"
+  get "/document_groups/password/create/:token",   to: "document_groups#create_password",   as: "create_password_document_group"
   patch "/document_groups/password/update/:token", to: "document_groups#update_password", as: "update_password_document_group"
 
   # 固定ページ
   get "document_groups/confirmation", to: "document_groups#confirmation", as: :document_groups_confirmation
-  
+  get "document_groups/invalid", to: "document_groups#invalid", as: :invalid
+  get "document_groups/completed", to: "document_groups#completed", as: :completed
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 

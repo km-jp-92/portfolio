@@ -1,5 +1,5 @@
 class DocumentGroupsController < ApplicationController
-  before_action :set_document_group_by_token, only: [ :edit_password, :update_password ]
+  before_action :set_document_group_by_token, only: [ :create_password, :update_password ]
 
   def new
     @document_group = DocumentGroup.new
@@ -15,10 +15,10 @@ class DocumentGroupsController < ApplicationController
 
     if @document_group.save
       # トークン付きURL生成
-      edit_url = edit_password_document_group_url(token: @document_group.token)
+      create_url = create_password_document_group_url(token: @document_group.token)
       upload_url = document_group_documents_url(@document_group)
       viewer_url = document_group_viewer_url(@document_group)
-      DocumentGroupMailer.password_setup(@document_group.email, edit_url, upload_url, viewer_url).deliver_now
+      DocumentGroupMailer.password_setup(@document_group.email, create_url, upload_url, viewer_url).deliver_now
       redirect_to document_groups_confirmation_path
     else
       flash.now[:alert] = "メールアドレスの保存に失敗しました。"
@@ -26,22 +26,28 @@ class DocumentGroupsController < ApplicationController
     end
   end
 
-  def edit_password
+  def create_password
     if @document_group.nil? || @document_group.token_expires_at < Time.current
-      redirect_to root_path, alert: "リンクが無効です"
+      redirect_to invalid_path
     end
     # ビューで @document_group を使ってフォーム表示
   end
 
   def update_password
     if @document_group.update(password_params)
-      redirect_to root_path, notice: "パスワードを設定しました"
+      redirect_to completed_path
     else
-      render :edit_password, status: :unprocessable_entity
+      render :create_password, status: :unprocessable_entity
     end
   end
 
   def confirmation
+  end
+
+  def invalid
+  end
+
+  def completed
   end
 
   private
