@@ -27,14 +27,11 @@ class DocumentGroupsController < ApplicationController
   end
 
   def create_password
-    if @document_group.nil? || @document_group.token_expires_at < Time.current
-      redirect_to invalid_path
-    end
-    # ビューで @document_group を使ってフォーム表示
   end
 
   def update_password
     if @document_group.update(password_params)
+      @document_group.update(token_used: true)
       redirect_to completed_path
     else
       render :create_password, status: :unprocessable_entity
@@ -54,6 +51,10 @@ class DocumentGroupsController < ApplicationController
 
   def set_document_group_by_token
     @document_group = DocumentGroup.find_by(token: params[:token])
+
+    if @document_group.nil? || @document_group.token_expires_at < Time.current || @document_group.token_used
+      redirect_to invalid_path
+    end
   end
 
   def document_group_params
