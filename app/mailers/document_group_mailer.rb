@@ -1,6 +1,8 @@
 class DocumentGroupMailer < ApplicationMailer
-  def password_setup(email, edit_url)
+  def password_setup(email, edit_url, upload_url, viewer_url)
     @edit_url = edit_url
-    mail(to: email, subject: "パスワード設定のご案内")
+    @upload_url = upload_url
+    @viewer_url = viewer_url
+    mail(to: email, subject: "資料グループURLのご案内")
   end
 end

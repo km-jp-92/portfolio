@@ -13,7 +13,7 @@
       class="border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
     >
       <option value="">選択してください</option>
-      <% @document_group.documents.each do |doc| %>
+      <% @documents.each do |doc| %>
         <option value="<%= doc.id %>" <%= "selected" if doc == @document %>>
           <%= doc.file.filename.to_s %>
         </option>

@@ -16,12 +16,13 @@ class DocumentGroupsController < ApplicationController
     if @document_group.save
       # トークン付きURL生成
       edit_url = edit_password_document_group_url(token: @document_group.token)
-      DocumentGroupMailer.password_setup(@document_group.email, edit_url).deliver_now
-      flash[:notice] = "メールをご確認ください。"
-      redirect_to root_path
+      upload_url = document_group_documents_url(@document_group)
+      viewer_url = document_group_viewer_url(@document_group)
+      DocumentGroupMailer.password_setup(@document_group.email, edit_url, upload_url, viewer_url).deliver_now
+      redirect_to document_groups_confirmation_path
     else
       flash.now[:alert] = "メールアドレスの保存に失敗しました。"
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -36,8 +37,11 @@ class DocumentGroupsController < ApplicationController
     if @document_group.update(password_params)
       redirect_to root_path, notice: "パスワードを設定しました"
     else
-      render :edit_password
+      render :edit_password, status: :unprocessable_entity
     end
+  end
+
+  def confirmation
   end
 
   private
