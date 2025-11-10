@@ -21,7 +21,6 @@ class DocumentGroupsController < ApplicationController
       DocumentGroupMailer.password_setup(@document_group.email, create_url, upload_url, viewer_url).deliver_now
       redirect_to document_groups_confirmation_path
     else
-      flash.now[:alert] = "メールアドレスの保存に失敗しました。"
       render :new, status: :unprocessable_entity
     end
   end
