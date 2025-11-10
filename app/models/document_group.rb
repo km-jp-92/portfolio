@@ -2,6 +2,9 @@ class DocumentGroup < ApplicationRecord
   # パスワード暗号化機能を有効化
   has_secure_password
 
+  # トークン自動生成
+  has_secure_token :token
+
   # 関連づけ（1対多）
   has_many :documents, dependent: :destroy
 
@@ -15,18 +18,17 @@ class DocumentGroup < ApplicationRecord
 
   # 小文字英数字8文字以上のフォーマット
   validates :password, format: {
-    with: /\A(?=.*[a-z])(?=.*\d)[a-z\d]{8,}\z/,
-    message: "は小文字英字と数字を含む8文字以上で入力してください"
+    with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{10,}\z/,
+    message: "は大文字英字、小文字英字、数字を含む10文字以上で入力してください"
   }, on: :update
 
-  # トークン自動生成
-  before_create :generate_token
+  # 作成時にトークン有効期限を設定
+  after_create :set_token_expiration
 
   private
 
-  def generate_token
-    self.token = SecureRandom.urlsafe_base64
-    self.token_expires_at = 1.hour.from_now
+  def set_token_expiration
+    update_column(:token_expires_at, 1.hour.from_now)
   end
 
   def password_presence_on_update

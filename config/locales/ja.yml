@@ -1,0 +1,6 @@
+ja:
+  activerecord:
+    attributes:
+      document_group:
+        password: "パスワード"
+        password_confirmation: "確認用パスワード"
