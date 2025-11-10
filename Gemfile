@@ -64,3 +64,5 @@ gem "tailwindcss-rails"
 gem "tailwindcss-ruby", "3.4.17"
 
 gem "resend"
+
+gem "aws-sdk-s3", require: false
