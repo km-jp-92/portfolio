@@ -12,14 +12,13 @@
 
   <!-- アップロードフォーム -->
   <div class="bg-white p-6 rounded-lg shadow-md mb-4">
-    <%= form_with model: [@document_group, @document], data: { turbo: false }, html: { multipart: true } do |f| %>
+    <%= form_with model: [@document_group, @document], html: { multipart: true },
+      data: { turbo: false, controller: "pdf-upload", pdf_upload_target: "form" } do |f| %>
       <div class="mb-2 text-center">
-        <%= f.label :files, "PDFを選択（複数可）→アップロードを押下", class: "block mb-1" %>
-        <%= f.file_field :files, multiple: true, accept: "application/pdf", class: "border rounded px-2 py-1 w-full" %>
+        <%= f.file_field :files, multiple: true, accept: "application/pdf", 
+        data: { action: "change->pdf-upload#upload" }, class: "border rounded px-2 py-1 w-full" %>
       </div>
-      <div class="text-center">
-        <%= f.submit "アップロード", class: "bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" %>
-      </div>
+      
     <% end %>
   </div>
 
