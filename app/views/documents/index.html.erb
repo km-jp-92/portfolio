@@ -1,29 +1,42 @@
-<h2 class="text-2xl font-bold mb-4">PDF一覧 / アップロード</h2>
+<div class="min-h-screen flex flex-col items-center px-4 py-6">
+  <!-- 見出し -->
+  <h2 class="text-2xl font-bold text-gray-800 mt-8 text-center">
+    PDFアップロード
+  </h2>
 
-<% if flash[:notice] %>
-  <p class="text-green-600 mb-2"><%= flash[:notice] %></p>
-<% end %>
+  <% if flash[:notice] %>
+    <p class="text-green-600 mb-2"><%= flash[:notice] %></p>
+  <% elsif flash[:alert] %>
+    <p class="text-red-600 mb-2"><%= flash[:alert] %></p>
+  <% end %>
 
-<!-- アップロードフォーム -->
-<%= form_with model: [@document_group, @document], data: { turbo: false }, html: { multipart: true } do |f| %>
-  <div class="mb-2">
-    <%= f.label :files, "PDFを選択（複数可）", class: "block mb-1" %>
-    <%= f.file_field :files, multiple: true, accept: "application/pdf", class: "border rounded px-2 py-1" %>
-  </div>
-  <%= f.submit "アップロード", class: "bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" %>
-<% end %>
-
-<!-- PDF一覧 -->
-<h3 class="text-xl font-semibold mb-2">アップロード済みPDF</h3>
-<% if @documents.any? %>
-  <ul class="list-disc pl-5">
-    <% @documents.each do |doc| %>
-      <li class="mb-1">
-        <%= link_to doc.file.filename.to_s, url_for(doc.file), target: "_blank", class: "text-blue-500 underline" %>
-        <%= link_to "削除", document_group_document_path(@document_group, doc), data: { turbo_method: :delete, turbo_confirm: "削除しますか？" }, class: "text-red-500 ml-2" %>
-      </li>
+  <!-- アップロードフォーム -->
+  <div class="bg-white p-6 rounded-lg shadow-md mb-4">
+    <%= form_with model: [@document_group, @document], html: { multipart: true },
+      data: { turbo: false, controller: "pdf-upload", pdf_upload_target: "form" } do |f| %>
+      <div class="mb-2 text-center">
+        <%= f.file_field :files, multiple: true, accept: "application/pdf", 
+        data: { action: "change->pdf-upload#upload" }, class: "border rounded px-2 py-1 w-full" %>
+      </div>
     <% end %>
-  </ul>
-<% else %>
-  <p>まだPDFはアップロードされていません。</p>
-<% end %>
+  </div>
+
+  <!-- PDF一覧 -->
+  <h3 class="text-2xl font-bold text-gray-800 mb-4 mt-8 text-center">アップロード済みPDF</h3>
+
+  <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+    <% if @documents.any? %>
+      <ul class="list-none pl-3">
+        <% @documents.each do |doc| %>
+          <li class="mb-1">
+            <%= link_to doc.file.filename.to_s, url_for(doc.file), target: "_blank", class: "text-blue-500 underline" %>
+            <%= link_to "削除", document_group_document_path(@document_group, doc), data: { turbo_method: :delete, turbo_confirm: "削除しますか？" }, 
+              class: "bg-red-500 hover:bg-red-600 text-white text-sm py-1 px-3 rounded" %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>まだPDFはアップロードされていません。</p>
+    <% end %>
+  </div>
+</div>

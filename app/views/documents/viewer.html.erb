@@ -1,5 +1,6 @@
 <div class="w-full mx-auto">
   <!-- PDF選択セクション -->
+  <div class="flex justify-between">
   <div 
     data-controller="pdf-selector"
     data-pdf-selector-group-id-value="<%= @document_group.id %>"
@@ -19,6 +20,11 @@
         </option>
       <% end %>
     </select>
+    </div>
+    <div>
+    <a href="<%= @document.present? ? url_for(@document.file) : '#' %>" 
+      target="_blank" class="text-blue-500 underline font-semibold ml-4"> PDFをブラウザで開く </a>
+    </div>
   </div>
 
   <!-- PDF表示セクション（1ページずつ表示） -->
@@ -39,16 +45,16 @@
 
   <!-- ページコントロール -->
   <div class="flex items-center space-x-3">
-    <button data-action="click->pdf-viewer#prevPage" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">前のページ</button>
+    <button data-action="click->pdf-viewer#prevPage" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">◀︎</button>
     <span>
       ページ 
       <span data-pdf-viewer-target="pageNumber">1</span> /
       <span data-pdf-viewer-target="totalPages">1</span>
     </span>
-    <button data-action="click->pdf-viewer#nextPage" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">次のページ</button>
+    <button data-action="click->pdf-viewer#nextPage" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">▶︎</button>
   <!-- ズームボタン -->
-    <button data-action="click->pdf-viewer#zoomOut" class="px-3 py-1 bg-red-500 text-white rounded">縮小</button>
-    <button data-action="click->pdf-viewer#zoomIn" class="px-3 py-1 bg-green-500 text-white rounded">拡大</button>
+    <button data-action="click->pdf-viewer#zoomOut" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 font-bold">−</button>
+    <button data-action="click->pdf-viewer#zoomIn" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 font-bold">＋</button>
   </div>
   </div>
 

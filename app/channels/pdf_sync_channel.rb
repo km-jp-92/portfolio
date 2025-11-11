@@ -11,4 +11,10 @@ class PdfSyncChannel < ApplicationCable::Channel
     pdf_id = params[:pdf_id]
     ActionCable.server.broadcast("pdf_sync_#{pdf_id}", data)
   end
+
+  # 聴講者が現在ページをリクエスト
+  def request_current_page
+    pdf_id = params[:pdf_id]
+    ActionCable.server.broadcast("pdf_sync_#{pdf_id}", { "request_page_for" => true })
+  end
 end
