@@ -117,12 +117,16 @@ export default class extends Controller {
     const canvas = this.canvasTarget
     const context = canvas.getContext("2d")
 
-    canvas.height = viewport.height
-    canvas.width = viewport.width
+    const scaleFactor = 2.0
+
+    canvas.height = viewport.height * scaleFactor
+    canvas.width = viewport.width * scaleFactor
 
     // 見た目のサイズも合わせる
     canvas.style.width = `${viewport.width}px`
     canvas.style.height = `${viewport.height}px`
+
+    context.scale(scaleFactor, scaleFactor)
 
     await page.render({ canvasContext: context, viewport }).promise
 
@@ -130,12 +134,12 @@ export default class extends Controller {
   }
 
   async zoomIn() {
-    this.scale *= 1.2
+    this.scale *= 1.05
     await this.renderPage(this.currentPage)
   }
 
   async zoomOut() {
-    this.scale /= 1.2
+    this.scale /= 1.05
     await this.renderPage(this.currentPage)
   }
 }
