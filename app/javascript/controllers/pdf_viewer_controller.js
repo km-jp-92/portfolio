@@ -40,8 +40,14 @@ export default class extends Controller {
       { channel: "PdfSyncChannel", pdf_id: this.pdfIdValue },
       {
         received: (data) => {
+          // 発表者が現在ページを返した場合（聴講者側）
           if (this.role === "audience") {
             this.changePage(data.page)
+          }
+
+          // 聴講者が現在ページをリクエストした場合（発表者側）
+          if (data.request_page_for && this.role === "presenter") {
+            this.pdfChannel.perform("page_changed", { page: this.currentPage })
           }
         }
       }
@@ -63,8 +69,14 @@ export default class extends Controller {
     }
 
     selectAudience() {
-      this.role = this.role === "audience" ? null : "audience"
+      const becomingAudience = this.role !== "audience"
+      this.role = becomingAudience ? "audience" : null
       this.updateRoleButtonStyles()
+
+      // 聴講者になった瞬間に発表者にページリクエストを送る
+      if (becomingAudience && this.pdfChannel) {
+        this.pdfChannel.perform("request_current_page")
+      }
     }
 
   // ボタン色更新
