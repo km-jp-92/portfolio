@@ -5,6 +5,8 @@ GlobalWorkerOptions.workerSrc = "/assets/pdf.worker.min.mjs";
 
 import consumer from "../channels/consumer"
 
+import Hammer from "hammerjs"
+
 // controller: pdf-viewer
 export default class extends Controller {
   static targets = ["canvas", "pageNumber", "totalPages", "nextButton", "prevButton", "presenterBtn", "audienceBtn"]
@@ -14,22 +16,13 @@ export default class extends Controller {
     this.scale = 1
     this.currentPage = 1
     this.role = null // "presenter", "audience", null
+    this.hammer = null
 
     document.addEventListener("fullscreenchange", this.handleFullscreenChange)
 
     document.addEventListener("keydown", this.handleKeydown)
 
-    this.touchStartX = 0
-    this.touchEndX = 0
-
-    this.canvasTarget.addEventListener("touchstart", e => {
-    this.touchStartX = e.changedTouches[0].clientX
-    })
-
-    this.canvasTarget.addEventListener("touchend", e => {
-      this.touchEndX = e.changedTouches[0].clientX
-      this.handleSwipe()
-    })
+    
 
     this.setupActionCable()
 
@@ -219,9 +212,13 @@ export default class extends Controller {
     if (document.fullscreenElement === wrapper) {
       selector.style.display = 'none'
       controls.style.display = 'none'
+
+      this.enableHammer()
     } else {
       selector.style.display = ''
       controls.style.display = ''
+
+      this.disableHammer()
     }
 
     // フルスクリーン切替後にPDFを再描画
@@ -251,14 +248,37 @@ export default class extends Controller {
     }
   }
 
-  handleSwipe() {
-    const deltaX = this.touchStartX - this.touchEndX
-    if (deltaX > 50) {
-      // 左スワイプ → 次ページ
-      this.nextPage()
-    } else if (deltaX < -50) {
-      // 右スワイプ → 前ページ
-      this.prevPage()
-    }
-}
+  enableHammer() {
+    if (this.hammer) return
+
+    const canvas = this.canvasTarget
+    canvas.style.touchAction = "none" // 標準ブラウザのタッチ操作を無効化
+
+    this.hammer = new Hammer(canvas)
+    this.hammer.get("pan").set({ direction: Hammer.DIRECTION_HORIZONTAL })
+    this.hammer.get("pinch").set({ enable: true })
+
+    // 横スワイプ
+    this.hammer.on("panend", e => {
+      if (e.pointers.length > 1) return // 2本指は無視
+      if (e.deltaX > 50) this.prevPage()
+      else if (e.deltaX < -50) this.nextPage()
+    })
+
+    // ピンチズーム
+    this.hammer.on("pinch", e => {
+      canvas.style.transform = `scale(${e.scale})`
+    })
+  }
+
+  disableHammer() {
+    if (!this.hammer) return
+
+    this.hammer.destroy()
+    this.hammer = null
+
+    const canvas = this.canvasTarget
+    canvas.style.transform = ""
+    canvas.style.touchAction = ""
+  }
 }
