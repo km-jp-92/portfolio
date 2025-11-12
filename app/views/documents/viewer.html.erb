@@ -1,6 +1,6 @@
-<div class="w-full mx-auto">
+<div id="pdf-fullscreen-wrapper" class="w-full mx-auto">
   <!-- PDF選択セクション -->
-  <div class="flex justify-between">
+  <div id="pdf-selector-area" class="flex justify-between">
   <div 
     data-controller="pdf-selector"
     data-pdf-selector-view-token-value="<%= @document_group.view_token %>"
@@ -34,7 +34,7 @@
   data-pdf-viewer-pdf-id-value="<%= @document.id %>"
   class="flex flex-col items-center bg-white rounded-lg shadow-md max-h-[100vh] overflow-hidden relative"
 >
-  <div class="flex items-center space-x-3">
+  <div id="pdf-controls-area" class="flex items-center space-x-3">
   <!-- 役割トグルボタン -->
     <div class="flex space-x-3">
       <button data-action="click->pdf-viewer#selectPresenter"
@@ -55,6 +55,10 @@
   <!-- ズームボタン -->
     <button data-action="click->pdf-viewer#zoomOut" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 font-bold">−</button>
     <button data-action="click->pdf-viewer#zoomIn" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 font-bold">＋</button>
+  <!-- フルスクリーンボタン -->
+    <button data-action="click->pdf-viewer#toggleFullScreen" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">
+      ⛶ フルスクリーン
+    </button>
   </div>
   </div>
 

@@ -11,9 +11,25 @@ export default class extends Controller {
   static values = { url: String, pdfId: Number  }
 
   async connect() {
-    this.scale = 1.4
+    this.scale = 1
     this.currentPage = 1
     this.role = null // "presenter", "audience", null
+
+    document.addEventListener("fullscreenchange", this.handleFullscreenChange)
+
+    document.addEventListener("keydown", this.handleKeydown)
+
+    this.touchStartX = 0
+    this.touchEndX = 0
+
+    this.canvasTarget.addEventListener("touchstart", e => {
+    this.touchStartX = e.changedTouches[0].clientX
+    })
+
+    this.canvasTarget.addEventListener("touchend", e => {
+      this.touchEndX = e.changedTouches[0].clientX
+      this.handleSwipe()
+    })
 
     this.setupActionCable()
 
@@ -31,6 +47,11 @@ export default class extends Controller {
     } catch (error) {
       console.error("PDF読み込みエラー:", error)
     }
+  }
+
+  disconnect() {
+    document.removeEventListener("fullscreenchange", this.handleFullscreenChange)
+    document.removeEventListener("keydown", this.handleKeydown)
   }
 
   // --- ページ同期用 ActionCable ---
@@ -125,21 +146,46 @@ export default class extends Controller {
 
   async renderPage(num) {
     const page = await this.pdf.getPage(num)
-    const viewport = page.getViewport({ scale: this.scale })
     const canvas = this.canvasTarget
     const context = canvas.getContext("2d")
 
+    const parentWidth = window.innerWidth
+    const parentHeight = window.innerHeight
+
+    // PDFの元サイズを取得（scale=1）
+    const unscaledViewport = page.getViewport({ scale: 1 })
+    const pageWidth = unscaledViewport.width
+    const pageHeight = unscaledViewport.height
+
+    // 上部コントロールの高さ
+    const viewer = canvas.closest('[data-controller="pdf-viewer"]')
+    const controls = viewer.querySelector('.flex.items-center.space-x-3')
+    const controlsHeight = controls?.offsetHeight || 0
+
+    // PDF選択セクションの高さ
+    const selector = document.querySelector('[data-controller="pdf-selector"]')
+    const selectorHeight = selector?.offsetHeight || 0
+
+    // 実際に描画可能な縦方向の高さ
+    const availableHeight = parentHeight - controlsHeight - selectorHeight
+
+    // canvasサイズに合わせるスケールを計算（縦横比維持）
+    const fitScale = Math.min(parentWidth / pageWidth, availableHeight / pageHeight)
+    const viewport = page.getViewport({ scale: fitScale * this.scale })
+
+    // canvasのピクセルサイズを調整
     const scaleFactor = 2.0
 
     canvas.height = viewport.height * scaleFactor
     canvas.width = viewport.width * scaleFactor
 
-    // 見た目のサイズも合わせる
+    // 見た目のサイズも合わせる（CSSで表示サイズを設定）
     canvas.style.width = `${viewport.width}px`
     canvas.style.height = `${viewport.height}px`
 
     context.scale(scaleFactor, scaleFactor)
 
+    // 描画
     await page.render({ canvasContext: context, viewport }).promise
 
     this.pageNumberTarget.textContent = num
@@ -154,4 +200,65 @@ export default class extends Controller {
     this.scale /= 1.05
     await this.renderPage(this.currentPage)
   }
+
+  toggleFullScreen() {
+    const wrapper = document.getElementById("pdf-fullscreen-wrapper")
+
+    if (!document.fullscreenElement) {
+      wrapper.requestFullscreen()
+    } else {
+      document.exitFullscreen()
+    }
+  }
+
+  handleFullscreenChange = () => {
+    const wrapper = document.getElementById("pdf-fullscreen-wrapper")
+    const selector = document.getElementById("pdf-selector-area")
+    const controls = document.getElementById("pdf-controls-area")
+
+    if (document.fullscreenElement === wrapper) {
+      selector.style.display = 'none'
+      controls.style.display = 'none'
+    } else {
+      selector.style.display = ''
+      controls.style.display = ''
+    }
+
+    // フルスクリーン切替後にPDFを再描画
+    setTimeout(() => this.renderPage(this.currentPage), 200)
+  }
+
+  handleKeydown = (event) => {
+    switch(event.key) {
+      case "ArrowRight":
+      case "Enter":
+        this.nextPage()
+        break
+      case "ArrowLeft":
+        this.prevPage()
+        break
+      case "ArrowUp":
+        this.prevPage()
+      break
+      case "ArrowDown":
+        this.nextPage()
+      break
+      case "Escape":
+        if (document.fullscreenElement) {
+          document.exitFullscreen()
+        }
+        break
+    }
+  }
+
+  handleSwipe() {
+    const deltaX = this.touchStartX - this.touchEndX
+    if (deltaX > 50) {
+      // 左スワイプ → 次ページ
+      this.nextPage()
+    } else if (deltaX < -50) {
+      // 右スワイプ → 前ページ
+      this.prevPage()
+    }
+}
 }
