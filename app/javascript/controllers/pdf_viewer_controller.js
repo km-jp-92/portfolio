@@ -19,6 +19,18 @@ export default class extends Controller {
 
     document.addEventListener("keydown", this.handleKeydown)
 
+    this.touchStartX = 0
+    this.touchEndX = 0
+
+    this.canvasTarget.addEventListener("touchstart", e => {
+    this.touchStartX = e.changedTouches[0].clientX
+    })
+
+    this.canvasTarget.addEventListener("touchend", e => {
+      this.touchEndX = e.changedTouches[0].clientX
+      this.handleSwipe()
+    })
+
     this.setupActionCable()
 
     try {
@@ -238,4 +250,15 @@ export default class extends Controller {
         break
     }
   }
+
+  handleSwipe() {
+    const deltaX = this.touchStartX - this.touchEndX
+    if (deltaX > 50) {
+      // 左スワイプ → 次ページ
+      this.nextPage()
+    } else if (deltaX < -50) {
+      // 右スワイプ → 前ページ
+      this.prevPage()
+    }
+}
 }
