@@ -1,11 +1,13 @@
 Rails.application.routes.draw do
   root "document_groups#new"
-  resources :document_groups, only: [ :new, :create ] do
-    # グループに紐づくPDF（アップロード・閲覧・削除）
-    resources :documents, only: [ :index, :create, :destroy ]
-    get  "viewer", to: "documents#viewer", as: :viewer
-    post "viewer", to: "documents#viewer"
-  end
+  resources :document_groups, only: [ :new, :create ]
+
+  get  "/documents/:token", to: "documents#index",  as: :documents
+  post "/documents/:token", to: "documents#create"
+  delete "/documents/:token/:id", to: "documents#destroy", as: :destroy_document
+
+  get  "/documents/viewer/:token", to: "documents#viewer", as: :viewer_documents
+  post "/documents/viewer/:token", to: "documents#viewer"
 
   # パスワード設定用
   get "/document_groups/password/create/:token",   to: "document_groups#create_password",   as: "create_password_document_group"

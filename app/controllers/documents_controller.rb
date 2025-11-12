@@ -1,5 +1,6 @@
 class DocumentsController < ApplicationController
-  before_action :set_document_group
+  before_action :set_document_group_by_upload_token, only: [ :index, :create, :destroy ]
+  before_action :set_document_group_by_view_token,   only: [ :viewer ]
   before_action :authenticate_group_password, only: [ :index, :create, :destroy ]
   before_action :check_documents_present, only: [ :viewer ]
   before_action :authenticate_viewer_password, only: [ :viewer ]
@@ -21,7 +22,7 @@ class DocumentsController < ApplicationController
 
       if @documents.any?
         flash[:notice] = "PDFをアップロードしました"
-        redirect_to document_group_documents_path(@document_group)
+        redirect_to documents_path(token: @document_group.upload_token)
       else
         flash.now[:alert] = "アップロードに失敗しました"
         @document = Document.new
@@ -40,7 +41,7 @@ class DocumentsController < ApplicationController
     @document = @document_group.documents.find(params[:id])
     @document.destroy
     flash[:notice] = "PDFを削除しました"
-    redirect_to document_group_documents_path(@document_group)
+    redirect_to documents_path(token: @document_group.upload_token)
   end
 
   def viewer
@@ -57,8 +58,18 @@ class DocumentsController < ApplicationController
 
   private
 
-  def set_document_group
-    @document_group = DocumentGroup.find(params[:document_group_id])
+  def set_document_group_by_upload_token
+    @document_group = DocumentGroup.find_by!(upload_token: params[:token])
+    if @document_group.upload_token_expires_at&.< Time.current
+      redirect_to invalid_path
+    end
+  end
+
+  def set_document_group_by_view_token
+    @document_group = DocumentGroup.find_by!(view_token: params[:token])
+    if @document_group.view_token_expires_at&.< Time.current
+      redirect_to invalid_path
+    end
   end
 
   def check_documents_present
@@ -77,7 +88,7 @@ class DocumentsController < ApplicationController
     if params[:password] && @document_group.authenticate(params[:password])
       # 認証成功
       session[:authenticated_document_group_id] = @document_group.id
-      redirect_to document_group_documents_path(@document_group)
+      redirect_to documents_path(token: @document_group.upload_token)
     else
       # 認証フォーム表示
       if params.key?(:password)
@@ -99,7 +110,7 @@ class DocumentsController < ApplicationController
 
     if params[:password] && @document_group.authenticate(params[:password])
       session[:authenticated_viewer_group_id] = @document_group.id
-      redirect_to document_group_viewer_path(@document_group)
+      redirect_to viewer_documents_path(token: @document_group.view_token)
     else
       if params.key?(:password)
         if params[:password].blank?

@@ -5,6 +5,9 @@ class DocumentGroup < ApplicationRecord
   # トークン自動生成
   has_secure_token :token
 
+  # 新規トークン生成
+  before_create :generate_upload_and_view_tokens
+
   # 関連づけ（1対多）
   has_many :documents, dependent: :destroy
 
@@ -35,5 +38,13 @@ class DocumentGroup < ApplicationRecord
     if password_digest.present? && password.blank?
       errors.add(:password, "を入力してください")
     end
+  end
+
+  def generate_upload_and_view_tokens
+    self.upload_token = SecureRandom.uuid
+    self.view_token   = SecureRandom.uuid
+
+    self.upload_token_expires_at ||= 14.days.from_now
+    self.view_token_expires_at   ||= 14.days.from_now
   end
 end

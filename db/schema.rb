@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_11_09_090312) do
+ActiveRecord::Schema[7.2].define(version: 2025_11_11_061737) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,9 +53,15 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_09_090312) do
     t.datetime "updated_at", null: false
     t.datetime "access_expires_at"
     t.boolean "token_used", default: false, null: false
+    t.string "upload_token"
+    t.string "view_token"
+    t.datetime "upload_token_expires_at"
+    t.datetime "view_token_expires_at"
     t.index ["email"], name: "index_document_groups_on_email"
     t.index ["reset_token"], name: "index_document_groups_on_reset_token", unique: true
     t.index ["token"], name: "index_document_groups_on_token", unique: true
+    t.index ["upload_token"], name: "index_document_groups_on_upload_token", unique: true
+    t.index ["view_token"], name: "index_document_groups_on_view_token", unique: true
   end
 
   create_table "documents", force: :cascade do |t|
