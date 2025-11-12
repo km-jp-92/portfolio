@@ -2,14 +2,14 @@ import { Controller } from "@hotwired/stimulus"
 
 // controller: pdf-selector
 export default class extends Controller {
-  static values = { groupId: Number }
+  static values = { viewToken: String }
 
   change(event) {
     const docId = event.target.value
     if (!docId) return
 
-    const groupId = this.groupIdValue
+    const token = this.viewTokenValue
     // viewer ページに遷移
-    window.location.href = `/document_groups/${groupId}/viewer?document_id=${docId}`
+    window.location.href = `/documents/viewer/${token}?document_id=${docId}`
   }
 }

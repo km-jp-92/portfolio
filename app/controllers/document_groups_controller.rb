@@ -16,8 +16,8 @@ class DocumentGroupsController < ApplicationController
     if @document_group.save
       # トークン付きURL生成
       create_url = create_password_document_group_url(token: @document_group.token)
-      upload_url = document_group_documents_url(@document_group)
-      viewer_url = document_group_viewer_url(@document_group)
+      upload_url = documents_url(token: @document_group.upload_token)
+      viewer_url = viewer_documents_url(token: @document_group.view_token)
       DocumentGroupMailer.password_setup(@document_group.email, create_url, upload_url, viewer_url).deliver_now
       redirect_to document_groups_confirmation_path
     else

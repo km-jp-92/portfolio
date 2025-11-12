@@ -12,7 +12,7 @@
 
   <!-- アップロードフォーム -->
   <div class="bg-white p-6 rounded-lg shadow-md mb-4">
-    <%= form_with model: [@document_group, @document], html: { multipart: true },
+    <%= form_with model: @document, url: documents_path(token: @document_group.upload_token), html: { multipart: true },
       data: { turbo: false, controller: "pdf-upload", pdf_upload_target: "form" } do |f| %>
       <div class="mb-2 text-center">
         <%= f.file_field :files, multiple: true, accept: "application/pdf", 
@@ -30,7 +30,7 @@
         <% @documents.each do |doc| %>
           <li class="mb-1">
             <%= link_to doc.file.filename.to_s, url_for(doc.file), target: "_blank", class: "text-blue-500 underline" %>
-            <%= link_to "削除", document_group_document_path(@document_group, doc), data: { turbo_method: :delete, turbo_confirm: "削除しますか？" }, 
+            <%= link_to "削除", destroy_document_path(@document_group.upload_token, doc), data: { turbo_method: :delete, turbo_confirm: "削除しますか？" }, 
               class: "bg-red-500 hover:bg-red-600 text-white text-sm py-1 px-3 rounded" %>
           </li>
         <% end %>
