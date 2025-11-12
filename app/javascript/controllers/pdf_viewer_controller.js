@@ -11,7 +11,7 @@ export default class extends Controller {
   static values = { url: String, pdfId: Number  }
 
   async connect() {
-    this.scale = 1.4
+    this.scale = 1
     this.currentPage = 1
     this.role = null // "presenter", "audience", null
 
@@ -125,21 +125,46 @@ export default class extends Controller {
 
   async renderPage(num) {
     const page = await this.pdf.getPage(num)
-    const viewport = page.getViewport({ scale: this.scale })
     const canvas = this.canvasTarget
     const context = canvas.getContext("2d")
 
+    const parentWidth = window.innerWidth
+    const parentHeight = window.innerHeight
+
+    // PDFの元サイズを取得（scale=1）
+    const unscaledViewport = page.getViewport({ scale: 1 })
+    const pageWidth = unscaledViewport.width
+    const pageHeight = unscaledViewport.height
+
+    // 上部コントロールの高さ
+    const viewer = canvas.closest('[data-controller="pdf-viewer"]')
+    const controls = viewer.querySelector('.flex.items-center.space-x-3')
+    const controlsHeight = controls?.offsetHeight || 0
+
+    // PDF選択セクションの高さ
+    const selector = document.querySelector('[data-controller="pdf-selector"]')
+    const selectorHeight = selector?.offsetHeight || 0
+
+    // 実際に描画可能な縦方向の高さ
+    const availableHeight = parentHeight - controlsHeight - selectorHeight
+
+    // canvasサイズに合わせるスケールを計算（縦横比維持）
+    const fitScale = Math.min(parentWidth / pageWidth, availableHeight / pageHeight)
+    const viewport = page.getViewport({ scale: fitScale * this.scale })
+
+    // canvasのピクセルサイズを調整
     const scaleFactor = 2.0
 
     canvas.height = viewport.height * scaleFactor
     canvas.width = viewport.width * scaleFactor
 
-    // 見た目のサイズも合わせる
+    // 見た目のサイズも合わせる（CSSで表示サイズを設定）
     canvas.style.width = `${viewport.width}px`
     canvas.style.height = `${viewport.height}px`
 
     context.scale(scaleFactor, scaleFactor)
 
+    // 描画
     await page.render({ canvasContext: context, viewport }).promise
 
     this.pageNumberTarget.textContent = num
