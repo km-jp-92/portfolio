@@ -15,6 +15,10 @@ export default class extends Controller {
     this.currentPage = 1
     this.role = null // "presenter", "audience", null
 
+    document.addEventListener("fullscreenchange", this.handleFullscreenChange)
+
+    document.addEventListener("keydown", this.handleKeydown)
+
     this.setupActionCable()
 
     try {
@@ -31,6 +35,11 @@ export default class extends Controller {
     } catch (error) {
       console.error("PDF読み込みエラー:", error)
     }
+  }
+
+  disconnect() {
+    document.removeEventListener("fullscreenchange", this.handleFullscreenChange)
+    document.removeEventListener("keydown", this.handleKeydown)
   }
 
   // --- ページ同期用 ActionCable ---
@@ -178,5 +187,55 @@ export default class extends Controller {
   async zoomOut() {
     this.scale /= 1.05
     await this.renderPage(this.currentPage)
+  }
+
+  toggleFullScreen() {
+    const wrapper = document.getElementById("pdf-fullscreen-wrapper")
+
+    if (!document.fullscreenElement) {
+      wrapper.requestFullscreen()
+    } else {
+      document.exitFullscreen()
+    }
+  }
+
+  handleFullscreenChange = () => {
+    const wrapper = document.getElementById("pdf-fullscreen-wrapper")
+    const selector = document.getElementById("pdf-selector-area")
+    const controls = document.getElementById("pdf-controls-area")
+
+    if (document.fullscreenElement === wrapper) {
+      selector.style.display = 'none'
+      controls.style.display = 'none'
+    } else {
+      selector.style.display = ''
+      controls.style.display = ''
+    }
+
+    // フルスクリーン切替後にPDFを再描画
+    setTimeout(() => this.renderPage(this.currentPage), 200)
+  }
+
+  handleKeydown = (event) => {
+    switch(event.key) {
+      case "ArrowRight":
+      case "Enter":
+        this.nextPage()
+        break
+      case "ArrowLeft":
+        this.prevPage()
+        break
+      case "ArrowUp":
+        this.prevPage()
+      break
+      case "ArrowDown":
+        this.nextPage()
+      break
+      case "Escape":
+        if (document.fullscreenElement) {
+          document.exitFullscreen()
+        }
+        break
+    }
   }
 }
