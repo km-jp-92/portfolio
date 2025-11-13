@@ -1,6 +1,6 @@
 class DocumentGroupsController < ApplicationController
   before_action :set_document_group_by_token, only: [ :new_password, :update_password ]
-  before_action :set_document_group_by_reset_token, only: [:password_reset_form, :password_reset]
+  before_action :set_document_group_by_reset_token, only: [ :password_reset_form, :password_reset ]
 
   def new
     @document_group = DocumentGroup.new
