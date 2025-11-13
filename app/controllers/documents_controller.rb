@@ -7,6 +7,8 @@ class DocumentsController < ApplicationController
 
   def index
     @documents = @document_group.documents
+      .joins(file_attachment: :blob)
+      .order("active_storage_blobs.filename ASC")
     @document = Document.new
   end
 
