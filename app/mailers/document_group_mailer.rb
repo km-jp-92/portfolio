@@ -6,6 +6,6 @@ class DocumentGroupMailer < ApplicationMailer
     @viewer_url = viewer_documents_url(token: @document_group.view_token)
     @group_code = @document_group.group_code
 
-    mail(to: @document_group.email, subject: "資料グループURLのご案内")
+    mail(to: @document_group.email, subject: "PDF同期サービス：パスワード設定とPDFリンクのご案内")
   end
 end
