@@ -27,7 +27,7 @@ class DocumentGroupsController < ApplicationController
 
   def update_password
     if @document_group.update(password_params)
-      @document_group.update(token_used: true)
+      @document_group.update(token: nil)
       redirect_to completed_path
     else
       render :new_password, status: :unprocessable_entity
@@ -75,7 +75,7 @@ class DocumentGroupsController < ApplicationController
   def set_document_group_by_token
     @document_group = DocumentGroup.find_by(token: params[:token])
 
-    if @document_group.nil? || @document_group.token_expires_at < Time.current || @document_group.token_used
+    if @document_group.nil? || @document_group.token_expires_at < Time.current
       redirect_to invalid_path
     end
   end
@@ -83,7 +83,7 @@ class DocumentGroupsController < ApplicationController
   def set_document_group_by_reset_token
     @document_group = DocumentGroup.find_by(reset_token: params[:reset_token])
 
-    if @document_group.nil? || @document_group.reset_token_expires_at < Time.current
+    if @document_group.nil? || @document_group.reset_token_expired?
       redirect_to invalid_path
     end
   end

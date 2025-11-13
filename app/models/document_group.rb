@@ -38,6 +38,10 @@ class DocumentGroup < ApplicationRecord
     reset_token
   end
 
+  def reset_token_expired?
+    reset_token_expires_at.nil? || reset_token_expires_at < Time.current
+  end
+
   private
 
   def set_token_expiration
