@@ -1,5 +1,6 @@
 class DocumentGroupsController < ApplicationController
-  before_action :set_document_group_by_token, only: [ :create_password, :update_password ]
+  before_action :set_document_group_by_token, only: [ :new_password, :update_password ]
+  before_action :set_document_group_by_reset_token, only: [:password_reset_form, :password_reset]
 
   def new
     @document_group = DocumentGroup.new
@@ -14,18 +15,14 @@ class DocumentGroupsController < ApplicationController
     @document_group.password_confirmation = dummy_password
 
     if @document_group.save
-      # トークン付きURL生成
-      create_url = create_password_document_group_url(token: @document_group.token)
-      upload_url = documents_url(token: @document_group.upload_token)
-      viewer_url = viewer_documents_url(token: @document_group.view_token)
-      DocumentGroupMailer.password_setup(@document_group.email, create_url, upload_url, viewer_url).deliver_now
+      DocumentGroupMailer.password_setup(@document_group).deliver_now
       redirect_to document_groups_confirmation_path
     else
       render :new, status: :unprocessable_entity
     end
   end
 
-  def create_password
+  def new_password
   end
 
   def update_password
@@ -33,7 +30,19 @@ class DocumentGroupsController < ApplicationController
       @document_group.update(token_used: true)
       redirect_to completed_path
     else
-      render :create_password, status: :unprocessable_entity
+      render :new_password, status: :unprocessable_entity
+    end
+  end
+
+  def password_reset_form
+  end
+
+  def password_reset
+    if @document_group.update(password_params)
+      @document_group.update(reset_token: nil, reset_token_expires_at: nil)
+      redirect_to completed_path
+    else
+      render :password_reset_form, status: :unprocessable_entity
     end
   end
 
@@ -46,12 +55,35 @@ class DocumentGroupsController < ApplicationController
   def completed
   end
 
+  def request_password_reset_form
+  end
+
+  def request_password_reset
+    @document_group = DocumentGroup.find_by(email: params[:email], group_code: params[:group_code])
+
+    if @document_group
+      PasswordResetMailer.send_reset_email(@document_group).deliver_now
+      redirect_to document_groups_confirmation_path
+    else
+      flash.now[:alert] = "入力内容が正しくありません"
+      render :request_password_reset_form, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_document_group_by_token
     @document_group = DocumentGroup.find_by(token: params[:token])
 
     if @document_group.nil? || @document_group.token_expires_at < Time.current || @document_group.token_used
+      redirect_to invalid_path
+    end
+  end
+
+  def set_document_group_by_reset_token
+    @document_group = DocumentGroup.find_by(reset_token: params[:reset_token])
+
+    if @document_group.nil? || @document_group.reset_token_expires_at < Time.current
       redirect_to invalid_path
     end
   end

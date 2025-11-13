@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_11_11_061737) do
+ActiveRecord::Schema[7.2].define(version: 2025_11_12_135010) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -57,7 +57,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_11_061737) do
     t.string "view_token"
     t.datetime "upload_token_expires_at"
     t.datetime "view_token_expires_at"
+    t.string "group_code"
     t.index ["email"], name: "index_document_groups_on_email"
+    t.index ["group_code"], name: "index_document_groups_on_group_code", unique: true
     t.index ["reset_token"], name: "index_document_groups_on_reset_token", unique: true
     t.index ["token"], name: "index_document_groups_on_token", unique: true
     t.index ["upload_token"], name: "index_document_groups_on_upload_token", unique: true
