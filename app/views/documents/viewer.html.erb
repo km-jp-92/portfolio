@@ -23,7 +23,7 @@
     </div>
     <div>
     <a href="<%= @document.present? ? url_for(@document.file) : '#' %>" 
-      target="_blank" class="text-blue-500 underline font-semibold ml-4"> PDFをブラウザで開く </a>
+      target="_blank" class="text-blue-500 underline ml-4"> PDFをブラウザで開く </a>
     </div>
   </div>
 
@@ -45,18 +45,18 @@
 
   <!-- ページコントロール -->
   <div class="flex items-center space-x-3">
-    <button data-action="click->pdf-viewer#prevPage" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">◀︎</button>
+    <button data-action="click->pdf-viewer#prevPage" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-400">◀︎</button>
     <span>
       ページ 
       <span data-pdf-viewer-target="pageNumber">1</span> /
       <span data-pdf-viewer-target="totalPages">1</span>
     </span>
-    <button data-action="click->pdf-viewer#nextPage" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">▶︎</button>
+    <button data-action="click->pdf-viewer#nextPage" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-400">▶︎</button>
   <!-- ズームボタン -->
-    <button data-action="click->pdf-viewer#zoomOut" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 font-bold">−</button>
-    <button data-action="click->pdf-viewer#zoomIn" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 font-bold">＋</button>
+    <button data-action="click->pdf-viewer#zoomOut" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-400 font-bold">−</button>
+    <button data-action="click->pdf-viewer#zoomIn" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-400 font-bold">＋</button>
   <!-- フルスクリーンボタン -->
-    <button data-action="click->pdf-viewer#toggleFullScreen" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">
+    <button data-action="click->pdf-viewer#toggleFullScreen" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-400">
       ⛶ フルスクリーン
     </button>
   </div>

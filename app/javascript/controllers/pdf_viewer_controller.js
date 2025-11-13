@@ -22,8 +22,6 @@ export default class extends Controller {
 
     document.addEventListener("keydown", this.handleKeydown)
 
-    
-
     this.setupActionCable()
 
     try {

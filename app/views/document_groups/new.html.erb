@@ -1,39 +1,37 @@
-<h1 class="text-2xl font-bold text-gray-800 text-center mb-6 mt-8">資料グループを作成</h1>
+<div class="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 py-12 space-y-10">
+  <!-- タイトル -->
+  <h1 class="text-3xl md:text-4xl font-bold text-gray-800 text-center">
+    PDFページ同期サービス
+  </h1>
 
-<%= form_with model: @document_group, data: { turbo: false }, class: "max-w-md mx-auto bg-white p-6 rounded shadow" do |f| %>
-  <%= f.label :email, "メールアドレス", class: "block text-gray-700 mb-2" %>
-  <%= f.email_field :email, required: true, placeholder: "example@example.com", class: "w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4" %>
+  <!-- キャッチコピー -->
+  <p class="text-lg md:text-xl text-gray-600 text-center max-w-xl">
+    発表者と聴講者の画面を <span class="font-semibold text-blue-600">リアルタイムで同期！</span><br>
+    アカウント登録不要・無料で使えます。
+  </p>
 
-  <%= f.submit "送信", class: "w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded" %>
-<% end %>
+  <!-- フォーム -->
+  <%= form_with model: @document_group, data: { turbo: false }, class: "max-w-md w-full bg-white pt-0 px-6 pb-6 rounded-xl shadow-lg flex flex-col space-y-4" do |f| %>
+    <%= f.label :email, "メールアドレス", class: "block text-gray-700 font-medium mb-2" %>
+    <%= f.email_field :email, required: true, placeholder: "example@example.com", class: "w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4" %>
 
-<!-- アプリ説明文 -->
-<div class="max-w-2xl mx-auto mt-8 bg-white p-8 rounded-lg shadow border border-blue-500">
-  <!-- 見出し -->
-  <h2 class="text-2xl font-bold text-blue-500 text-center mb-6">
-    本サービス（PDFファイルページめくり同期）の使い方
-  </h2>
+    <%= f.submit "送信", class: "w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded" %>
+  <% end %>
 
-  <!-- 説明文 -->
-  <ol class="list-none space-y-6 text-gray-800 text-lg leading-relaxed">
-    <li class="flex items-start">
-      <span class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mr-4">1</span>
-      <div>
-        上記のフォームにメールアドレスを入力・送信すると、資料グループのURLが届きます。具体的には以下の3つのページのURLです：
-        <ul class="list-disc list-inside ml-6 mt-2 space-y-1 text-gray-700 text-base">
-          <li>PDFファイルをアップロードするページ</li>
-          <li>アップロードしたPDFを閲覧・同期するページ</li>
-          <li>上記URLにアクセスするためのパスワード設定ページ</li>
-        </ul>
+  <!-- 使い方カード -->
+  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4 w-full max-w-5xl">
+    <% steps = ["メールアドレスを入力して送信", "メールで届くリンクからパスワードを設定", "PDFをアップロード", "発表者がめくったページが同期されます"] %>
+    <% steps.each_with_index do |step, i| %>
+      <div class="bg-white rounded-xl shadow-md p-6 text-center hover:shadow-xl transition transform hover:-translate-y-1">
+        <div class="text-2xl font-bold mb-2 text-blue-600"><%= i + 1 %></div>
+        <p class="text-gray-700 font-medium"><%= step %></p>
       </div>
-    </li>
-    <li class="flex items-start">
-      <span class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mr-4">2</span>
-      <div>メールが届いたら、まずパスワードを設定してください。その後、PDFファイルをアップロードし、閲覧・同期画面に入室してください。</div>
-    </li>
-    <li class="flex items-start">
-      <span class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mr-4">3</span>
-      <div>閲覧・同期画面では、発表者がめくったページが聴講者にリアルタイムで同期されます。</div>
-    </li>
-  </ol>
+    <% end %>
+  </div>
+
+  <!-- 利用シーン -->
+  <p class="text-gray-700 text-center max-w-xl text-lg md:text-2xl font-semibold">
+  会議・セミナー・イベント・勉強会など、<br>
+  どんな場面でも簡単に共有可能
+</p>
 </div>

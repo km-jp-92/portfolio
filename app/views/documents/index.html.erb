@@ -1,8 +1,4 @@
-<div class="min-h-screen flex flex-col items-center px-4 py-6">
-  <!-- 見出し -->
-  <h2 class="text-2xl font-bold text-gray-800 mt-8 text-center">
-    PDFアップロード
-  </h2>
+<div class="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
 
   <% if flash[:notice] %>
     <p class="text-green-600 mb-2"><%= flash[:notice] %></p>
@@ -11,32 +7,43 @@
   <% end %>
 
   <!-- アップロードフォーム -->
-  <div class="bg-white p-6 rounded-lg shadow-md mb-4">
+  <div class="w-full max-w-lg  bg-white p-0 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition">
     <%= form_with model: @document, url: documents_path(token: @document_group.upload_token), html: { multipart: true },
       data: { turbo: false, controller: "pdf-upload", pdf_upload_target: "form" } do |f| %>
-      <div class="mb-2 text-center">
+      
+      <div class="flex items-center justify-center w-full">
+        <label class="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-blue-400 rounded-lg cursor-pointer bg-blue-50 hover:bg-blue-100 transition">
+          <div class="flex flex-col items-center justify-center pt-5 pb-6 text-blue-500">
+            <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6.1a5 5 0 11-.02 9.9H7z" />
+            </svg>
+            <p class="text-sm font-medium">クリックまたはファイルをドラッグ</p>
+          </div>
         <%= f.file_field :files, multiple: true, accept: "application/pdf", 
-        data: { action: "change->pdf-upload#upload" }, class: "border rounded px-2 py-1 w-full" %>
+        data: { action: "change->pdf-upload#upload" }, class: "hidden" %>
+      </label>
       </div>
     <% end %>
   </div>
 
   <!-- PDF一覧 -->
-  <h3 class="text-2xl font-bold text-gray-800 mb-4 mt-8 text-center">アップロード済みPDF</h3>
-
-  <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+  <div class="w-full max-w-2xl mt-12">
+  <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
     <% if @documents.any? %>
-      <ul class="list-none pl-3">
+      <ul class="divide-y divide-gray-200">
         <% @documents.each do |doc| %>
-          <li class="mb-1">
-            <%= link_to doc.file.filename.to_s, url_for(doc.file), target: "_blank", class: "text-blue-500 underline" %>
-            <%= link_to "削除", destroy_document_path(@document_group.upload_token, doc), data: { turbo_method: :delete, turbo_confirm: "削除しますか？" }, 
-              class: "bg-red-500 hover:bg-red-600 text-white text-sm py-1 px-3 rounded" %>
+          <li class="flex items-center justify-between py-3">
+            <%= link_to doc.file.filename.to_s, url_for(doc.file), target: "_blank", class: "text-blue-600 font-medium hover:underline truncate" %>
+            <%= link_to "×", destroy_document_path(@document_group.upload_token, doc), data: { turbo_method: :delete, turbo_confirm: "削除しますか？" }, 
+              class: "bg-red-500 hover:bg-red-600 text-white text-sm py-1 px-3 rounded-md transition" %>
           </li>
         <% end %>
       </ul>
     <% else %>
-      <p>まだPDFはアップロードされていません。</p>
+      <p class="text-gray-500 text-center">まだPDFはアップロードされていません。</p>
     <% end %>
+  </div>
   </div>
 </div>
