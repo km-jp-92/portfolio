@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "onboarding@resend.dev"
+  default from: "noreply@mail.pdfsync.tech"
   layout "mailer"
 end
