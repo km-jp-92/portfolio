@@ -56,6 +56,9 @@ class DocumentsController < ApplicationController
     else
                   @documents.first
     end
+
+    # キャッシュを無効化
+    expires_in 0, public: true
   end
 
   private
