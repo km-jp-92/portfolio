@@ -19,8 +19,8 @@
   <% end %>
 
   <!-- 使い方カード -->
-  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4 w-full max-w-5xl">
-    <% steps = ["メールアドレスを入力して送信", "メールで届くリンクからパスワードを設定", "PDFをアップロード", "発表者がめくったページが同期されます"] %>
+  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 w-full max-w-5xl">
+    <% steps = ["メールアドレスを入力して送信", "届いたメールのリンクからPDFをアップロード", "発表者がめくったページが聴講者にリアルタイムで同期されます"] %>
     <% steps.each_with_index do |step, i| %>
       <div class="bg-white rounded-xl shadow-md p-6 text-center hover:shadow-xl transition transform hover:-translate-y-1">
         <div class="text-2xl font-bold mb-2 text-blue-600"><%= i + 1 %></div>
