@@ -68,3 +68,5 @@ gem "resend"
 gem "aws-sdk-s3", require: false
 
 gem "rails-i18n", "~> 7.0"
+
+gem "rqrcode", "~> 3.0"
