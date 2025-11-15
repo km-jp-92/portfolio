@@ -50,10 +50,10 @@ MVPリリース時
 フロントエンド
 - Tailwind CSS
 - Stimulus
-- PDF.js (PDF資料の表示用)
+- PDF.js（PDF資料の表示用）
 
 バックエンド
-- Rails ActionCable (資料ページのリアルタイム同期)
+- Rails ActionCable（資料ページのリアルタイム同期）
 
 データベース
 - PostgreSQL（本番環境: Render / 開発環境: ローカル PostgreSQL）
