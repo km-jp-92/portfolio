@@ -90,4 +90,4 @@ MVPリリース時
   [画面遷移図（Figmaへのリンク）](https://www.figma.com/design/hEMEl2NMbi86g6tvFbVLcY/%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?node-id=0-1&p=f&t=eId5hsnLZXJZyMQ5-0)
 
 ■ ER図  
-  [ER図（Gyazoへのリンク）](https://gyazo.com/87604236248cf9f63c3a878fc6169fb3)
+  [ER図（Gyazoへのリンク）](https://gyazo.com/6ccea24f0d5d5825511f2018275d2ea8)
