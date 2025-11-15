@@ -25,8 +25,9 @@ export default class extends Controller {
     this.setupActionCable()
 
     try {
+      const pdfUrl = `${this.urlValue}?t=${Date.now()}`;
       const loadingTask = getDocument({
-        url: this.urlValue,
+        url: pdfUrl,
         // 日本語PDF対応: CMap設定を追加
         cMapUrl: "/assets/cmaps/",  // public/assets/cmaps/ に配置
         cMapPacked: true
@@ -237,6 +238,16 @@ export default class extends Controller {
       break
       case "ArrowDown":
         this.nextPage()
+      break
+      case "f":
+      case "F":
+        const wrapper = document.getElementById("pdf-fullscreen-wrapper")
+
+        if (!document.fullscreenElement) {
+          wrapper.requestFullscreen()
+        } else {
+          document.exitFullscreen()
+        }
       break
       case "Escape":
         if (document.fullscreenElement) {
