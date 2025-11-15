@@ -26,6 +26,10 @@ Rails.application.routes.draw do
   get "document_groups/invalid", to: "document_groups#invalid", as: :invalid
   get "document_groups/completed", to: "document_groups#completed", as: :completed
 
+  # プライバシーポリシー・利用規約
+  get "privacy", to: "pages#privacy"
+  get "terms",   to: "pages#terms"
+
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
