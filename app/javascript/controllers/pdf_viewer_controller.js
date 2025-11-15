@@ -239,6 +239,16 @@ export default class extends Controller {
       case "ArrowDown":
         this.nextPage()
       break
+      case "f":
+      case "F":
+        const wrapper = document.getElementById("pdf-fullscreen-wrapper")
+
+        if (!document.fullscreenElement) {
+          wrapper.requestFullscreen()
+        } else {
+          document.exitFullscreen()
+        }
+      break
       case "Escape":
         if (document.fullscreenElement) {
           document.exitFullscreen()
