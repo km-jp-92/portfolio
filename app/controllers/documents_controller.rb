@@ -41,6 +41,7 @@ class DocumentsController < ApplicationController
 
   def destroy
     @document = @document_group.documents.find(params[:id])
+    @document.file.purge if @document.file.attached?
     @document.destroy
     flash[:notice] = "PDFを削除しました"
     redirect_to documents_path(token: @document_group.upload_token)
