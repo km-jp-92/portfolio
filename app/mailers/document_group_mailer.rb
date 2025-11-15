@@ -12,7 +12,8 @@ class DocumentGroupMailer < ApplicationMailer
     # QRコード生成
     qrcode = RQRCode::QRCode.new(@viewer_url)
     svg = qrcode.as_svg(module_size: 6, standalone: true)
-    @viewer_qr_base64 = Base64.strict_encode64(svg)
+    qr_data = svg
+    attachments.inline["qr_code.svg"] = { mime_type: "image/svg+xml", content: qr_data }
 
     mail(to: @document_group.email, subject: "PDF同期サービス：パスワード設定とPDFリンクのご案内")
   end
