@@ -10,15 +10,15 @@ Rails.application.routes.draw do
   post "/documents/viewer/:token", to: "documents#viewer"
 
   # パスワード設定用
-  get   "/document_groups/password/new/:token", to: "document_groups#new_password", as: :new_document_group_password
-  patch "/document_groups/password/:token",     to: "document_groups#update_password", as: :document_group_password
+  get   "/document_groups/password/:token", to: "document_groups#new_password", as: :new_document_group_password
+  patch "/document_groups/password/:token", to: "document_groups#update_password", as: :document_group_password
 
   # パスワード再設定リクエスト
-  get  "/document_groups/password_resets/new", to: "document_groups#request_password_reset_form", as: :new_document_group_password_reset
+  get  "/document_groups/password_resets", to: "document_groups#request_password_reset_form", as: :new_document_group_password_reset
   post "/document_groups/password_resets",     to: "document_groups#request_password_reset",      as: :document_group_password_resets
 
   # パスワード再設定
-  get   "/document_groups/password_resets/:reset_token/edit", to: "document_groups#password_reset_form", as: :edit_document_group_password_reset
+  get   "/document_groups/password_resets/:reset_token", to: "document_groups#password_reset_form", as: :edit_document_group_password_reset
   patch "/document_groups/password_resets/:reset_token",      to: "document_groups#password_reset",      as: :update_document_group_password_reset
 
   # 固定ページ
