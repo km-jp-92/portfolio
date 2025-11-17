@@ -4,3 +4,5 @@ ja:
       document_group:
         password: "パスワード"
         password_confirmation: "確認用パスワード"
+      document:
+        file: "ファイル"
