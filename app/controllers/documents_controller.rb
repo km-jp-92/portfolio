@@ -15,19 +15,24 @@ class DocumentsController < ApplicationController
   def create
     uploaded_files = document_params[:files] # 複数ファイル
     @documents = []
+    @failed_documents = []
 
     if uploaded_files.present?
       uploaded_files.each do |uploaded_file|
         doc = @document_group.documents.new(file: uploaded_file)
-        @documents << doc if doc.save
+        if doc.save
+          @documents << doc
+        else
+          @failed_documents << doc
+        end
       end
 
       if @documents.any?
-        flash[:notice] = "PDFをアップロードしました"
+        flash[:notice] = "アップロードしました"
         redirect_to documents_path(token: @document_group.upload_token)
       else
         flash.now[:alert] = "アップロードに失敗しました"
-        @document = Document.new
+        @document = @failed_documents.first || Document.new
         @documents = @document_group.documents.reload
         render :index, status: :unprocessable_entity
       end
@@ -43,7 +48,7 @@ class DocumentsController < ApplicationController
     @document = @document_group.documents.find(params[:id])
     @document.file.purge if @document.file.attached?
     @document.destroy
-    flash[:notice] = "PDFを削除しました"
+    flash[:notice] = "削除しました"
     redirect_to documents_path(token: @document_group.upload_token)
   end
 
