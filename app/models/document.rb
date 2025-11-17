@@ -13,7 +13,7 @@ class Document < ApplicationRecord
       unless file.content_type.in?(%w[application/pdf])
         errors.add(:file, "はPDFのみアップロード可能です")
       end
-  
+
       if file.blob.byte_size > 20.megabytes
         errors.add(:file, "は20MB以下にしてください")
       end
