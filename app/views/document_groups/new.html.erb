@@ -1,26 +1,43 @@
-<div class="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 py-12 space-y-10">
+<div class="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 py-12">
   <!-- タイトル -->
-  <h1 class="text-3xl md:text-4xl font-bold text-gray-800 text-center">
+  <h1 class="text-3xl md:text-4xl font-bold text-gray-800 text-center mb-10">
     PDFページ同期サービス
   </h1>
 
   <!-- キャッチコピー -->
-  <p class="text-lg md:text-xl text-gray-600 text-center max-w-xl">
+  <p class="text-lg md:text-xl text-gray-600 text-center max-w-xl mb-8">
     発表者と聴講者の画面を <span class="font-semibold text-blue-600">リアルタイムで同期！</span><br>
     アカウント登録不要で使えます。
   </p>
 
+  <p class="text-sm md:text-base text-gray-500 text-center max-w-xl mb-6">
+    ※ご入力いただいたメールアドレスには、本サービスでPDFをアップロード・同期するためのURLが届き、他の目的には一切使用されませんのでご安心ください。<br>
+  </p>
+
   <!-- フォーム -->
-  <%= form_with model: @document_group, data: { turbo: false }, class: "max-w-md w-full bg-white pt-0 px-6 pb-6 rounded-xl shadow-lg flex flex-col space-y-4" do |f| %>
+  <%= form_with model: @document_group, data: { turbo: false }, class: "max-w-md w-full bg-white pt-0 px-6 pb-6 rounded-xl shadow-lg flex flex-col space-y-4 mb-10" do |f| %>
     <%= f.label :email, "メールアドレス", class: "block text-gray-700 font-medium mb-2" %>
     <%= f.email_field :email, required: true, placeholder: "example@example.com", class: "w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4" %>
 
     <%= f.submit "送信", class: "w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded" %>
   <% end %>
 
+  <!-- YouTube動画埋め込み -->
+  <div class="w-full max-w-3xl mx-auto mb-10">
+    <div class="relative pb-[56.25%] h-0">
+      <iframe class="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
+              src="https://www.youtube.com/embed/XQPLut9xWVo" 
+              title="PDFページ同期サービス動画"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
   <!-- 使い方カード -->
-  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 w-full max-w-5xl">
-    <% steps = ["メールアドレスを入力して送信", "届いたメールのリンクからPDFをアップロード", "発表者がめくったページが聴講者にリアルタイムで同期されます"] %>
+  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 w-full max-w-5xl mb-8">
+    <% steps = ["メールアドレスを入力して送信", "メールに専用URLが届くので、PDFをアップロード", "発表者がめくったページが聴講者にリアルタイムで同期されます"] %>
     <% steps.each_with_index do |step, i| %>
       <div class="bg-white rounded-xl shadow-md p-6 text-center hover:shadow-xl transition transform hover:-translate-y-1">
         <div class="text-2xl font-bold mb-2 text-blue-600"><%= i + 1 %></div>
