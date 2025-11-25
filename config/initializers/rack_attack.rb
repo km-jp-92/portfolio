@@ -17,11 +17,11 @@ class Rack::Attack
 
   # カスタムレスポンス
   # 制限に達した場合のレスポンス
-  self.throttled_response = lambda do |env|
+  self.throttled_responder = lambda do |request|
     [
       429,
       { "Content-Type" => "text/plain" },
-      [ "アクセスが多すぎます。しばらく待ってください。" ]
+      ["アクセスが多すぎます。しばらく待ってください。"]
     ]
   end
 end

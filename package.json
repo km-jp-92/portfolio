@@ -12,6 +12,8 @@
     "@hotwired/turbo-rails": "^8.0.20",
     "@rails/actioncable": "^8.1.100",
     "hammerjs": "^2.0.8",
-    "pdfjs-dist": "^5.4.394"
+    "pdfjs-dist": "^5.4.394",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   }
 }
