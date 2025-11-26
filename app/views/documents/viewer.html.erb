@@ -28,6 +28,7 @@
   </div>
 
   <!-- PDF表示セクション（1ページずつ表示） -->
+<div class="flex-1">
 <div 
   data-controller="pdf-viewer"
   data-pdf-viewer-url-value="<%= url_for(@document.file) %>"
@@ -67,4 +68,8 @@
     <canvas data-pdf-viewer-target="canvas" class="border shadow-md block mx-auto"></canvas>
   </div>
   </div>
+
+  <!-- 右サイドパネル（Reactマウント） -->
+  <div id="side-panel-root" class="w-80 border-l bg-white shadow-md"></div>
+</div>
 </div>
