@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import RoleSelector from "./RoleSelector";
 import PdfControls from "./PdfControls";
@@ -38,9 +38,16 @@ const PdfViewer: React.FC<Props> = ({
   setRole
 }) => {
   const [numPages, setNumPages] = useState<number>(0);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth - 250);
+
+useEffect(() => {
+  const handleResize = () => setWindowWidth(window.innerWidth - 250);
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
 
   return (
-    <div className="flex flex-col items-center bg-white rounded-lg shadow-md max-h-[100vh] overflow-hidden relative">
+    <div className="flex flex-col items-center bg-white rounded-lg shadow-md relative">
       <PdfControls
         pageNumber={currentPage}
         numPages={numPages}
@@ -57,7 +64,7 @@ const PdfViewer: React.FC<Props> = ({
           options={options}
           onLoadSuccess={({ numPages }) => setNumPages(numPages)}
         >
-          <Page pageNumber={currentPage} scale={scale} />
+          <Page pageNumber={currentPage} width={windowWidth} />
         </Document>
       </div>
     </div>
