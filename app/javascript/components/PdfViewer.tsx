@@ -39,7 +39,10 @@ const PdfViewer: React.FC<Props> = ({
 }) => {
   const [numPages, setNumPages] = useState<number>(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowSize, setWindowSize] = useState({
+  width: window.innerWidth,
+  height: window.innerHeight,
+});
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [pdfPageSize, setPdfPageSize] = useState<{ width: number; height: number }>({ width: 1, height: 1 });
@@ -55,7 +58,10 @@ const PdfViewer: React.FC<Props> = ({
 useEffect(() => {
   const handleResize = () => {
     if (!isFullscreen) {
-      setWindowWidth(window.innerWidth);
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
     }
   };
 
