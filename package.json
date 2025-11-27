@@ -14,9 +14,10 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "hammerjs": "^2.0.8",
-    "pdfjs-dist": "^5.4.394",
+    "pdfjs-dist": "5.4.296",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-pdf": "^10.2.0",
     "typescript": "^5.9.3"
   }
 }

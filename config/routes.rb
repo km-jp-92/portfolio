@@ -9,6 +9,8 @@ Rails.application.routes.draw do
   get  "/documents/viewer/:token", to: "documents#viewer", as: :viewer_documents
   post "/documents/viewer/:token", to: "documents#viewer"
 
+  get  "/documents/viewer/:token/json", to: "documents#viewer_json",  as: :viewer_documents_json
+
   # パスワード設定用
   get   "/document_groups/password/:token", to: "document_groups#new_password", as: :new_document_group_password
   patch "/document_groups/password/:token", to: "document_groups#update_password", as: :document_group_password

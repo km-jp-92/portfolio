@@ -1,9 +1,9 @@
 class DocumentsController < ApplicationController
   before_action :set_document_group_by_upload_token, only: [ :index, :create, :destroy ]
-  before_action :set_document_group_by_view_token,   only: [ :viewer ]
+  before_action :set_document_group_by_view_token,   only: [ :viewer, :viewer_json ]
   before_action :authenticate_group_password, only: [ :index, :create, :destroy ]
-  before_action :check_documents_present, only: [ :viewer ]
-  before_action :authenticate_viewer_password, only: [ :viewer ]
+  before_action :check_documents_present, only: [ :viewer, :viewer_json ]
+  before_action :authenticate_viewer_password, only: [ :viewer, :viewer_json ]
 
   def index
     @documents = @document_group.documents
@@ -53,6 +53,9 @@ class DocumentsController < ApplicationController
   end
 
   def viewer
+  end
+  
+  def viewer_json
     @documents = Document
       .joins(file_attachment: :blob)
       .where(document_group_id: @document_group.id)
@@ -63,8 +66,18 @@ class DocumentsController < ApplicationController
                   @documents.first
     end
 
-    # キャッシュを無効化
-    expires_in 0, public: true
+    render json: {
+    documentGroupId: @document_group.id,
+    viewToken: @document_group.view_token,
+    currentDocumentId: @document.id,
+    documents: @documents.map { |doc|
+      {
+        id: doc.id,
+        name: doc.file.filename.to_s,
+        url: url_for(doc.file)
+      }
+    }
+  }
   end
 
   private
