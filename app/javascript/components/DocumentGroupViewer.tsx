@@ -105,7 +105,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
         />
       </div>
 
-      <SidePanel />
+      {/*<SidePanel />*/}
     </div>
   );
 };
