@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
-import RoleSelector from "./RoleSelector";
-import PdfControls from "./PdfControls";
+
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
@@ -23,9 +22,7 @@ interface Props {
   currentPage: number;
   setCurrentPage: (n: number) => void;
   scale: number;
-  setScale: (s: number) => void;
-  role: "presenter" | "audience" | null;
-  setRole: (r: "presenter" | "audience" | null) => void;
+  onPageCount: (n: number) => void;
 }
 
 const PdfViewer: React.FC<Props> = ({
@@ -33,9 +30,7 @@ const PdfViewer: React.FC<Props> = ({
   currentPage,
   setCurrentPage,
   scale,
-  setScale,
-  role,
-  setRole
+  onPageCount,
 }) => {
   const [numPages, setNumPages] = useState<number>(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -47,12 +42,8 @@ const PdfViewer: React.FC<Props> = ({
 
   const [pdfPageSize, setPdfPageSize] = useState<{ width: number; height: number }>({ width: 1, height: 1 });
 
-  const toggleFullScreen = () => {
-    if (!document.fullscreenElement) {
-      containerRef.current?.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+    onPageCount(numPages); // ← ここで親の setNumPages を呼ぶ
   };
 
 useEffect(() => {
@@ -72,13 +63,7 @@ useEffect(() => {
 }, [isFullscreen]);
 
 
-useEffect(() => {
-    const handleChange = () => {
-      setIsFullscreen(Boolean(document.fullscreenElement));
-    };
-    document.addEventListener("fullscreenchange", handleChange);
-    return () => document.removeEventListener("fullscreenchange", handleChange);
-  }, []);
+
 
   
 
@@ -100,24 +85,21 @@ const computedScale = isFullscreen ? baseScale : baseScale * scale;
 
   return (
     <div className="flex flex-col items-center bg-white rounded-lg shadow-md relative">
-      <PdfControls
-        pageNumber={currentPage}
-        numPages={numPages}
-        scale={scale}
-        setPageNumber={setCurrentPage}
-        setScale={setScale}
-        toggleFullscreen={toggleFullScreen}
-      />
+      
 
-      <RoleSelector role={role} setRole={setRole} />
+      
 
       <div ref={containerRef} className="overflow-auto w-full h-full">
         <Document
           file={pdf.url}
           options={options}
-          onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+          onLoadSuccess={onDocumentLoadSuccess}
         >
-          <Page pageNumber={currentPage} scale={computedScale} onLoadSuccess={onPageLoadSuccess}/>
+          <Page pageNumber={currentPage} scale={computedScale} onLoadSuccess={onPageLoadSuccess}
+            onRenderSuccess={() => {
+            // PdfViewer 内部のページ更新 → 親へ伝達
+            setCurrentPage(currentPage);
+          }}/>
         </Document>
       </div>
     </div>

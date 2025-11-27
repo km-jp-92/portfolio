@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PdfSelector from "./PdfSelector";
+import RoleSelector from "./RoleSelector";
+import PdfControls from "./PdfControls";
 import PdfViewer from "./PdfViewer";
 import SidePanel from "./SidePanel";
 import usePdfSync from "../hooks/usePdfSync";
@@ -22,13 +24,15 @@ interface DocumentGroupViewerProps {
 }
 
 const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
-  // Hooks はすべて最上部で呼ぶ
   const [data, setData] = useState<ViewerData | null>(null);
   const [selectedPdf, setSelectedPdf] = useState<Document | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [scale, setScale] = useState(1);
   const [role, setRole] = useState<"presenter" | "audience" | null>(null);
-
+  const [numPages, setNumPages] = useState<number>(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
   // 初期データを fetch
   useEffect(() => {
     let mounted = true;
@@ -68,6 +72,22 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
     }
   }, [message, role, data]);
 
+  const toggleFullScreen = () => {
+    if (!document.fullscreenElement) {
+      containerRef.current?.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
+  useEffect(() => {
+      const handleChange = () => {
+        setIsFullscreen(Boolean(document.fullscreenElement));
+      };
+      document.addEventListener("fullscreenchange", handleChange);
+      return () => document.removeEventListener("fullscreenchange", handleChange);
+    }, []);
+
   // データ未ロード中
   if (!data || !selectedPdf) {
     return <div>読み込み中...</div>;
@@ -89,6 +109,18 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
         }}
         />
 
+      <PdfControls
+        pageNumber={currentPage}
+        numPages={numPages}
+        scale={scale}
+        setPageNumber={setCurrentPage}
+        setScale={setScale}
+        toggleFullscreen={toggleFullScreen}
+      />
+
+      <RoleSelector role={role} setRole={setRole} />
+
+      <div ref={containerRef}>
         <PdfViewer
           pdf={selectedPdf}
           currentPage={currentPage}
@@ -99,10 +131,9 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
             }
           }}
           scale={scale}
-          setScale={setScale}
-          role={role}
-          setRole={setRole}
+          onPageCount={(n) => setNumPages(n)}
         />
+      </div>
       </div>
 
       {/*<SidePanel />*/}
