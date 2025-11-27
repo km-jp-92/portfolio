@@ -32,6 +32,11 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   const [numPages, setNumPages] = useState<number>(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const roleRef = useRef(role);
+  const currentPageRef = useRef(currentPage);
+  const currentPdfIdRef = useRef(selectedPdf?.id);
   
   // 初期データを fetch
   useEffect(() => {
@@ -57,7 +62,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
     };
   }, [token]);
 
-  const { message, broadcast } = usePdfSync({
+  const { message, broadcast, requestCurrentPage } = usePdfSync({
     documentGroupId: data?.documentGroupId || 0,
   });
 
@@ -71,6 +76,16 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
       setCurrentPage(message.page);
     }
   }, [message, role, data]);
+
+  useEffect(() => {
+    if (role === "audience") {
+      requestCurrentPage();
+    }
+  }, [role]);
+
+  useEffect(() => { roleRef.current = role; }, [role]);
+useEffect(() => { currentPageRef.current = currentPage; }, [currentPage]);
+useEffect(() => { currentPdfIdRef.current = selectedPdf?.id; }, [selectedPdf]);
 
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
@@ -88,6 +103,23 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
       return () => document.removeEventListener("fullscreenchange", handleChange);
     }, []);
 
+  useEffect(() => {
+  const updateHeight = () => {
+    if (topRef.current) {
+      setHeaderHeight(topRef.current.offsetHeight);
+    }
+  };
+
+  updateHeight();
+  window.addEventListener("resize", updateHeight);
+  return () => window.removeEventListener("resize", updateHeight);
+}, []);
+
+  const availableHeight = isFullscreen
+  ? window.innerHeight
+  : window.innerHeight - headerHeight;
+
+
   // データ未ロード中
   if (!data || !selectedPdf) {
     return <div>読み込み中...</div>;
@@ -96,6 +128,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   return (
     <div className="flex w-full">
       <div className="flex-1 flex flex-col">
+        <div ref={topRef}>
         <PdfSelector
           documents={data.documents}
           selectedPdf={selectedPdf}
@@ -119,6 +152,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
       />
 
       <RoleSelector role={role} setRole={setRole} />
+      </div>
 
       <div ref={containerRef}>
         <PdfViewer
@@ -132,6 +166,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
           }}
           scale={scale}
           onPageCount={(n) => setNumPages(n)}
+          availableHeight={availableHeight}
         />
       </div>
       </div>

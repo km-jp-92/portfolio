@@ -31,6 +31,7 @@ const PdfViewer: React.FC<Props> = ({
   setCurrentPage,
   scale,
   onPageCount,
+  availableHeight
 }) => {
   const [numPages, setNumPages] = useState<number>(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -74,7 +75,7 @@ useEffect(() => {
 
   const baseScale = Math.min(
   window.innerWidth / pdfPageSize.width,
-  window.innerHeight / pdfPageSize.height
+  availableHeight / pdfPageSize.height
 );
 
 // ボタンでの拡大縮小を反映

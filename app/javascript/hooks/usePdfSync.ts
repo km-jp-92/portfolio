@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import consumer from "../channels/consumer";
 
-export default function usePdfSync({ documentGroupId }) {
+export default function usePdfSync({ documentGroupId, roleRef, currentPageRef, currentPdfIdRef }) {
   const [message, setMessage] = useState(null);
   const subscriptionRef = useRef(null);
 
@@ -19,6 +19,13 @@ export default function usePdfSync({ documentGroupId }) {
       {
         received: (data) => {
           setMessage(data); // 受信データを親へ返すだけ
+
+        if (data.request_page_for && roleRef.current === "presenter") {
+          subscriptionRef.current?.perform("page_changed", {
+          pdf_id: currentPdfIdRef.current,
+          page: currentPageRef.current
+        });
+        }
         },
       }
     );
@@ -37,5 +44,9 @@ export default function usePdfSync({ documentGroupId }) {
     subscriptionRef.current?.perform("page_changed", { pdf_id: pdfId, page });
   };
 
-  return { message, broadcast };
+  const requestCurrentPage = () => {
+    subscriptionRef.current?.perform("request_current_page");
+  };
+
+  return { message, broadcast, requestCurrentPage };
 }
