@@ -36,8 +36,6 @@ const PdfViewer: React.FC<Props> = ({
   availableHeight,
   isFullscreen
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-
   const [pdfPageSize, setPdfPageSize] = useState<{ width: number; height: number }>({ width: 1, height: 1 });
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
@@ -66,7 +64,7 @@ const computedScale = isFullscreen ? baseScale : baseScale * scale;
 
       
 
-      <div ref={containerRef} className="overflow-auto w-full h-full">
+      <div className="overflow-auto w-full h-full">
         <Document
           file={pdf.url}
           options={options}
