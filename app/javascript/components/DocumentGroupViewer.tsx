@@ -84,8 +84,8 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   }, [role]);
 
   useEffect(() => { roleRef.current = role; }, [role]);
-useEffect(() => { currentPageRef.current = currentPage; }, [currentPage]);
-useEffect(() => { currentPdfIdRef.current = selectedPdf?.id; }, [selectedPdf]);
+  useEffect(() => { currentPageRef.current = currentPage; }, [currentPage]);
+  useEffect(() => { currentPdfIdRef.current = selectedPdf?.id; }, [selectedPdf]);
 
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
@@ -126,9 +126,9 @@ useEffect(() => { currentPdfIdRef.current = selectedPdf?.id; }, [selectedPdf]);
   }
 
   return (
-    <div className="flex w-full">
-      <div className="flex-1 flex flex-col">
-        <div ref={topRef}>
+    <div className="flex flex-col w-full h-screen bg-gray-100">
+      
+        <div ref={topRef} className="flex items-center space-x-3">
         <PdfSelector
           documents={data.documents}
           selectedPdf={selectedPdf}
@@ -152,9 +152,16 @@ useEffect(() => { currentPdfIdRef.current = selectedPdf?.id; }, [selectedPdf]);
       />
 
       <RoleSelector role={role} setRole={setRole} />
+      <a
+        href={selectedPdf.url}
+        target="_blank"
+        className="text-blue-500 underline"
+      >
+        ブラウザで開く
+      </a>
       </div>
 
-      <div ref={containerRef}>
+      <div ref={containerRef} className="flex justify-center w-full">
         <PdfViewer
           pdf={selectedPdf}
           currentPage={currentPage}
@@ -169,7 +176,7 @@ useEffect(() => { currentPdfIdRef.current = selectedPdf?.id; }, [selectedPdf]);
           availableHeight={availableHeight}
         />
       </div>
-      </div>
+      
 
       {/*<SidePanel />*/}
     </div>

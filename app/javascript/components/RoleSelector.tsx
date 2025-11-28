@@ -14,7 +14,7 @@ const RoleSelector: React.FC<Props> = ({ role, setRole }) => {
           role === "presenter" ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
         }`}
       >
-        発表する
+        発表
       </button>
       <button
         onClick={() => setRole(role === "audience" ? null : "audience")}
@@ -22,7 +22,7 @@ const RoleSelector: React.FC<Props> = ({ role, setRole }) => {
           role === "audience" ? "bg-green-500 text-white" : "bg-gray-200 text-black"
         }`}
       >
-        聴講する
+        聴講
       </button>
     </div>
   );

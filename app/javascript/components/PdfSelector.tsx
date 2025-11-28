@@ -14,7 +14,7 @@ interface Props {
 
 const PdfSelector: React.FC<Props> = ({ documents, selectedPdf, onSelect }) => {
   return (
-    <div className="flex items-center space-x-3 p-2">
+    <div className="flex items-center p-2">
       <label htmlFor="pdf-select">資料を選択：</label>
 
       <select
@@ -33,13 +33,7 @@ const PdfSelector: React.FC<Props> = ({ documents, selectedPdf, onSelect }) => {
         ))}
       </select>
 
-      <a
-        href={selectedPdf.url}
-        target="_blank"
-        className="text-blue-500 underline"
-      >
-        PDFをブラウザで開く
-      </a>
+      
     </div>
   );
 };
