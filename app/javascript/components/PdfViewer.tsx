@@ -24,6 +24,7 @@ interface Props {
   scale: number;
   setNumPages: (n: number) => void;
   availableHeight: number;
+  isFullscreen: boolean;
 }
 
 const PdfViewer: React.FC<Props> = ({
@@ -32,9 +33,9 @@ const PdfViewer: React.FC<Props> = ({
   setCurrentPage,
   scale,
   setNumPages,
-  availableHeight
+  availableHeight,
+  isFullscreen
 }) => {
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [windowSize, setWindowSize] = useState({
   width: window.innerWidth,
   height: window.innerHeight,

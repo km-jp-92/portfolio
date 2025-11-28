@@ -174,6 +174,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
           scale={scale}
           setNumPages={setNumPages}
           availableHeight={availableHeight}
+          isFullscreen={isFullscreen}
         />
       </div>
       
