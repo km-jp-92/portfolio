@@ -37,6 +37,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   const roleRef = useRef(role);
   const currentPageRef = useRef(currentPage);
   const currentPdfIdRef = useRef(selectedPdf?.id);
+  const [isPanelOpen, setIsPanelOpen] = useState(true);
   
   // 初期データを fetch
   useEffect(() => {
@@ -126,9 +127,8 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   }
 
   return (
-    <div className="flex flex-col w-full h-screen bg-gray-100">
-      
-        <div ref={topRef} className="flex items-center space-x-3">
+    <div className="relative w-full">
+    <div ref={topRef} className="flex items-center bg-gray-200 shadow space-x-3">
         <PdfSelector
           documents={data.documents}
           selectedPdf={selectedPdf}
@@ -160,6 +160,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
         ブラウザで開く
       </a>
       </div>
+      
 
       <div ref={containerRef} className="flex justify-center w-full">
         <PdfViewer
