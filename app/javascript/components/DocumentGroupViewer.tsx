@@ -143,10 +143,10 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
         />
 
       <PdfControls
-        pageNumber={currentPage}
+        currentPage={currentPage}
         numPages={numPages}
         scale={scale}
-        setPageNumber={setCurrentPage}
+        setCurrentPage={setCurrentPage}
         setScale={setScale}
         toggleFullscreen={toggleFullScreen}
       />

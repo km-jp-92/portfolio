@@ -1,20 +1,20 @@
 import React from "react";
 
 interface Props {
-  pageNumber: number;
+  currentPage: number;
   numPages: number;
   scale: number;
-  setPageNumber: (n: number) => void;
+  setCurrentPage: (n: number) => void;
   setScale: (s: number) => void;
   toggleFullscreen?: () => void;
 }
 
-const PdfControls: React.FC<Props> = ({ pageNumber, numPages, scale, setPageNumber, setScale, toggleFullscreen }) => {
+const PdfControls: React.FC<Props> = ({ currentPage, numPages, scale, setCurrentPage, setScale, toggleFullscreen }) => {
   return (
     <div className="flex items-center space-x-3">
-      <button onClick={() => setPageNumber(Math.max(1, pageNumber - 1))}>◀︎</button>
-      <span>ページ {pageNumber} / {numPages}</span>
-      <button onClick={() => setPageNumber(Math.min(numPages, pageNumber + 1))}>▶︎</button>
+      <button onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}>◀︎</button>
+      <span>ページ {currentPage} / {numPages}</span>
+      <button onClick={() => setCurrentPage(Math.min(numPages, currentPage + 1))}>▶︎</button>
       <button onClick={() => setScale(scale * 1.1)} className="px-2">＋</button>
       <button onClick={() => setScale(scale / 1.1)} className="px-2">−</button>
       {toggleFullscreen && (
