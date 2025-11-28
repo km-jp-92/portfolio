@@ -54,7 +54,7 @@ class DocumentsController < ApplicationController
 
   def viewer
   end
-  
+
   def viewer_json
     @documents = Document
       .joins(file_attachment: :blob)

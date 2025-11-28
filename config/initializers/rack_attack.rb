@@ -21,7 +21,7 @@ class Rack::Attack
     [
       429,
       { "Content-Type" => "text/plain" },
-      ["アクセスが多すぎます。しばらく待ってください。"]
+      [ "アクセスが多すぎます。しばらく待ってください。" ]
     ]
   end
 end
