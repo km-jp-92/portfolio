@@ -172,7 +172,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
             }
           }}
           scale={scale}
-          onPageCount={(n) => setNumPages(n)}
+          setNumPages={setNumPages}
           availableHeight={availableHeight}
         />
       </div>

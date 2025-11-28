@@ -22,7 +22,8 @@ interface Props {
   currentPage: number;
   setCurrentPage: (n: number) => void;
   scale: number;
-  onPageCount: (n: number) => void;
+  setNumPages: (n: number) => void;
+  availableHeight: number;
 }
 
 const PdfViewer: React.FC<Props> = ({
@@ -30,10 +31,9 @@ const PdfViewer: React.FC<Props> = ({
   currentPage,
   setCurrentPage,
   scale,
-  onPageCount,
+  setNumPages,
   availableHeight
 }) => {
-  const [numPages, setNumPages] = useState<number>(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [windowSize, setWindowSize] = useState({
   width: window.innerWidth,
@@ -44,7 +44,7 @@ const PdfViewer: React.FC<Props> = ({
   const [pdfPageSize, setPdfPageSize] = useState<{ width: number; height: number }>({ width: 1, height: 1 });
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    onPageCount(numPages); // ← ここで親の setNumPages を呼ぶ
+    setNumPages(numPages); // ← ここで親の setNumPages を呼ぶ
   };
 
 useEffect(() => {
