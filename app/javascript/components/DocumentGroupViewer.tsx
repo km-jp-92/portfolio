@@ -211,11 +211,11 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
       />
 
       <RoleSelector role={role} setRole={setRole} />
-      <button className="ml-auto bg-blue-600 text-white px-3 py-1 rounded" onClick={openCommentWindow}>コメント</button>
+      <button className="ml-auto bg-blue-600 text-black px-2 py-1 rounded" onClick={openCommentWindow}>チャット</button>
       <a
         href={selectedPdf.url}
         target="_blank"
-        className="text-blue-500 underline"
+        className="text-blue-500 underline px-4"
       >
         ブラウザで開く
       </a>
