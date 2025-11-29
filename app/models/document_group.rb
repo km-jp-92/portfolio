@@ -13,6 +13,7 @@ class DocumentGroup < ApplicationRecord
 
   # 関連づけ（1対多）
   has_many :documents, dependent: :destroy
+  has_many :comments, dependent: :destroy
 
   # バリデーション
   validates :email, presence: true

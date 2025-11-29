@@ -60,6 +60,9 @@ class DocumentsController < ApplicationController
       .joins(file_attachment: :blob)
       .where(document_group_id: @document_group.id)
       .order("active_storage_blobs.filename ASC")
+
+    @comments = @document_group.comments.order(created_at: :asc)
+
     @document = if params[:document_id]
                   @document_group.documents.find(params[:document_id])
     else
@@ -75,6 +78,14 @@ class DocumentsController < ApplicationController
         id: doc.id,
         name: doc.file.filename.to_s,
         url: url_for(doc.file)
+      }
+    },
+    initialComments: @comments.map { |c|
+      {
+        id: c.id,
+        content: c.content,
+        likes_count: c.likes_count,
+        created_at: c.created_at.strftime("%Y-%m-%d %H:%M:%S")
       }
     }
   }

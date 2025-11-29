@@ -3,8 +3,9 @@ import PdfSelector from "./PdfSelector";
 import RoleSelector from "./RoleSelector";
 import PdfControls from "./PdfControls";
 import PdfViewer from "./PdfViewer";
-import SidePanel from "./SidePanel";
+import CommentPanel from "./CommentPanel";
 import usePdfSync from "../hooks/usePdfSync";
+import useCommentSync, { Comment } from "../hooks/useCommentSync";
 
 interface Document {
   id: number;
@@ -12,11 +13,18 @@ interface Document {
   url: string;
 }
 
+interface Comment {
+  id: number;
+  content: string;
+  likes_count: number;
+}
+
 interface ViewerData {
   documentGroupId: number;
   viewToken: string;
   currentDocumentId: number;
   documents: Document[];
+  comments: Comment[];
 }
 
 interface DocumentGroupViewerProps {
@@ -37,7 +45,8 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   const roleRef = useRef(role);
   const currentPageRef = useRef(currentPage);
   const currentPdfIdRef = useRef(selectedPdf?.id);
-  const [isPanelOpen, setIsPanelOpen] = useState(true);
+  const [isCommentOpen, setIsCommentOpen] = useState(false);
+  const [initialComments, setInitialComments] = useState<Comment[]>([]);
   
   // 初期データを fetch
   useEffect(() => {
@@ -55,6 +64,8 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
           json.documents[0] ||
           null;
         setSelectedPdf(initialPdf);
+
+        setInitialComments(json.initialComments || []);
       })
       .catch((err) => console.error("Failed to fetch initial data:", err));
 
@@ -66,6 +77,17 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   const { message, broadcast, requestCurrentPage } = usePdfSync({
     documentGroupId: data?.documentGroupId || 0,
   });
+
+  const { comments, addComment, likeComment, setComments } = useCommentSync(
+  data?.documentGroupId || 0,
+  []
+);
+
+useEffect(() => {
+  if (initialComments.length > 0) {
+    setComments(initialComments);
+  }
+}, [initialComments]);
 
   useEffect(() => {
     if (!message) return;
@@ -152,6 +174,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
       />
 
       <RoleSelector role={role} setRole={setRole} />
+      <button className="ml-auto bg-blue-600 text-white px-3 py-1 rounded" onClick={() => setIsCommentOpen(true)}>コメント</button>
       <a
         href={selectedPdf.url}
         target="_blank"
@@ -177,10 +200,15 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
           availableHeight={availableHeight}
           isFullscreen={isFullscreen}
         />
-      </div>
       
-
-      {/*<SidePanel />*/}
+      </div>
+      {isCommentOpen && <CommentPanel
+          comments={comments}
+          isOpen={isCommentOpen}
+          onClose={() => setIsCommentOpen(false)}
+          onSend={addComment}
+          onLike={likeComment}
+        />}
     </div>
   );
 };
