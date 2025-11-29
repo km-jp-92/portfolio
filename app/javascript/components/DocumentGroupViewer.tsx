@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
+import ReactDOM from "react-dom/client";
 import PdfSelector from "./PdfSelector";
 import RoleSelector from "./RoleSelector";
 import PdfControls from "./PdfControls";
 import PdfViewer from "./PdfViewer";
 import CommentPanel from "./CommentPanel";
 import usePdfSync from "../hooks/usePdfSync";
-import useCommentSync, { Comment } from "../hooks/useCommentSync";
+import useCommentSync from "../hooks/useCommentSync";
 
 interface Document {
   id: number;
@@ -83,11 +84,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   []
 );
 
-useEffect(() => {
-  if (initialComments.length > 0) {
-    setComments(initialComments);
-  }
-}, [initialComments]);
+
 
   useEffect(() => {
     if (!message) return;
@@ -143,6 +140,46 @@ useEffect(() => {
   : window.innerHeight - headerHeight;
 
 
+  const commentWindowRef = useRef<Window | null>(null);
+
+  const openCommentWindow = () => {
+  if (commentWindowRef.current && !commentWindowRef.current.closed) {
+    commentWindowRef.current.focus();
+    return;
+  }
+
+  const win = window.open(
+    "",
+    "Comments",
+    "width=400,height=600,resizable,scrollbars=yes"
+  );
+  if (!win) return;
+
+  const parentLinks = document.querySelectorAll('link[rel="stylesheet"]');
+    parentLinks.forEach((link) => {
+      win.document.head.appendChild(link.cloneNode(true));
+    });
+
+  // head が揃うまで遅延して React をマウント（安全のため）
+  win.document.body.style.margin = "0";
+  win.document.title = "Comments";
+
+  const div = win.document.createElement("div");
+  win.document.body.appendChild(div);
+
+  ReactDOM.createRoot(div).render(
+    <CommentPanel
+    documentGroupId={data?.documentGroupId || 0}
+    initialComments={initialComments} />
+  );
+
+  commentWindowRef.current = win;
+};
+
+
+
+
+
   // データ未ロード中
   if (!data || !selectedPdf) {
     return <div>読み込み中...</div>;
@@ -174,7 +211,7 @@ useEffect(() => {
       />
 
       <RoleSelector role={role} setRole={setRole} />
-      <button className="ml-auto bg-blue-600 text-white px-3 py-1 rounded" onClick={() => setIsCommentOpen(true)}>コメント</button>
+      <button className="ml-auto bg-blue-600 text-white px-3 py-1 rounded" onClick={openCommentWindow}>コメント</button>
       <a
         href={selectedPdf.url}
         target="_blank"
@@ -183,6 +220,7 @@ useEffect(() => {
         ブラウザで開く
       </a>
       </div>
+      
       
 
       <div ref={containerRef} className="flex justify-center w-full">
@@ -202,14 +240,12 @@ useEffect(() => {
         />
       
       </div>
-      {isCommentOpen && <CommentPanel
-          comments={comments}
-          isOpen={isCommentOpen}
-          onClose={() => setIsCommentOpen(false)}
-          onSend={addComment}
-          onLike={likeComment}
-        />}
-    </div>
+
+      
+      
+        </div>
+    
+    
   );
 };
 
