@@ -4,6 +4,7 @@ import useCommentSync from "../hooks/useCommentSync";
 
 interface CommentPanelProps {
   documentGroupId: number;
+  initialComments: any[];
 }
 
 interface FormData {
@@ -14,6 +15,7 @@ const CommentPanel: React.FC<CommentPanelProps> = ({ documentGroupId, initialCom
   const { comments, addComment, likeComment, setComments } = useCommentSync(documentGroupId);
   const { register, handleSubmit, reset } = useForm<FormData>();
   const listRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   const onSubmit = (data: FormData) => {
     if (!data.content.trim()) return;
@@ -25,27 +27,27 @@ const CommentPanel: React.FC<CommentPanelProps> = ({ documentGroupId, initialCom
     setComments(initialComments);
   }, [initialComments, setComments]);
 
-  // コメント追加時にスクロールを最下部に
   useLayoutEffect(() => {
-  if (listRef.current) {
-    listRef.current.scrollTop =
-      listRef.current.scrollHeight - listRef.current.clientHeight;
-  }
-}, [comments]);
+    const el = listRef.current;
+    if (!el) return;
+
+    // 一番下にスクロール
+    el.scrollTop = el.scrollHeight;
+  }, [comments]);
 
 
   return (
-    <div className="w-80 h-full bg-white shadow-lg z-50 flex flex-col pointer-events-auto">
+    <div className="w-full h-full flex flex-col bg-white">
 
-      <div ref={listRef} className="flex-1 overflow-y-auto p-2 space-y-2">
+      <div ref={listRef} className="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
         {comments.map(c => (
-          <div key={c.id} className="p-2 border rounded flex justify-between items-start">
+          <div key={c.id} className="p-3 bg-white rounded shadow border flex justify-between">
             <div>
-              <p>{c.content}</p>
+              <div className="text-gray-800">{c.content}</div>
               {/*<small className="text-gray-500">{c.created_at}</small>*/}
             </div>
             <button
-              className="ml-2 text-sm px-2 py-1 bg-blue-200 rounded hover:bg-blue-300"
+              className="ml-3 text-sm px-2 py-1 bg-blue-200 rounded hover:bg-blue-300"
               onClick={() => likeComment(c.id)}
             >
               👍 {c.likes_count}
@@ -54,16 +56,16 @@ const CommentPanel: React.FC<CommentPanelProps> = ({ documentGroupId, initialCom
         ))}
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="p-2 border-t flex flex-shrink-0"
+      <form onSubmit={handleSubmit(onSubmit)} className="p-3 bg-white border-t flex flex-shrink-0"
       >
         <input
           {...register("content")}
           type="text"
           placeholder="コメントを入力"
-          className="flex-1 px-2 py-1 border rounded mr-2"
+          className="flex-1 px-3 py-2 border rounded mr-3"
         />
-        <button type="submit" className="px-3 py-1 text-black rounded">
-          📤
+        <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+          送信
         </button>
       </form>
     </div>

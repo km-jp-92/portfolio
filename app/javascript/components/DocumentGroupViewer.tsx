@@ -160,18 +160,28 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
       win.document.head.appendChild(link.cloneNode(true));
     });
 
-  // head が揃うまで遅延して React をマウント（安全のため）
-  win.document.body.style.margin = "0";
-  win.document.title = "Comments";
+   win.document.body.style.margin = "0";
+  win.document.body.innerHTML = ""; // 初期レイアウトを完全削除
 
-  const div = win.document.createElement("div");
-  win.document.body.appendChild(div);
 
-  ReactDOM.createRoot(div).render(
-    <CommentPanel
-    documentGroupId={data?.documentGroupId || 0}
-    initialComments={initialComments} />
-  );
+
+
+
+  const root = win.document.createElement("div");
+  root.id = "react-root";
+  root.style.position = "relative"; // ← 横線消えるポイント
+  root.style.inset = "0";        // ← ウィンドウ全体を覆う
+  win.document.body.appendChild(root);
+
+  setTimeout(() => {
+    ReactDOM.createRoot(root).render(
+      <CommentPanel
+        documentGroupId={data?.documentGroupId || 0}
+        initialComments={initialComments}
+        parentWindow={window}
+      />
+    );
+  }, 0);
 
   commentWindowRef.current = win;
 };
