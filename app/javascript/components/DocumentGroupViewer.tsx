@@ -206,7 +206,8 @@ const openMemoWindow = () => {
   win.document.body.appendChild(root);
 
   setTimeout(() => {
-    ReactDOM.createRoot(root).render(<MemoPanel />);
+    ReactDOM.createRoot(root).render(
+    <MemoPanel token={token} />);
   }, 0);
 
   memoWindowRef.current = win;

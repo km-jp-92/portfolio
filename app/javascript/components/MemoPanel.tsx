@@ -1,9 +1,8 @@
-// src/components/MemoPanel.tsx
 import React, { useState, useEffect } from "react";
 
 const STORAGE_KEY = "memo_text";
 
-const MemoPanel: React.FC = () => {
+const MemoPanel: React.FC = ({ token }) => {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +27,7 @@ const MemoPanel: React.FC = () => {
       .querySelector('meta[name="csrf-token"]')
       ?.getAttribute("content");
 
-    const res = await fetch("/documents/format_memo", {
+    const res = await fetch(`/documents/viewer/${token}/format_memo`, {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
