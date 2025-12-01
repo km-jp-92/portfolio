@@ -262,7 +262,7 @@ const openMemoWindow = () => {
         target="_blank"
         className="text-blue-500 underline px-4"
       >
-        ブラウザで開く
+        ブラウザでPDFを開く
       </a>
       </div>
       

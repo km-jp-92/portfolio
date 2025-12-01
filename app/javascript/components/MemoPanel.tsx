@@ -23,9 +23,17 @@ const MemoPanel: React.FC = () => {
   const formatMemo = async () => {
     setLoading(true);
 
+    // CSRF トークンを取得
+    const csrfToken = document
+      .querySelector('meta[name="csrf-token"]')
+      ?.getAttribute("content");
+
     const res = await fetch("/documents/format_memo", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken || "" 
+      },
       body: JSON.stringify({ content: text }),
     });
 
