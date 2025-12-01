@@ -15,6 +15,6 @@ class DocumentGroupMailer < ApplicationMailer
     qr_data = svg
     attachments.inline["qr_code.svg"] = { mime_type: "image/svg+xml", content: qr_data }
 
-    mail(to: @document_group.email, subject: "PDF同期サービス：パスワード設定とPDFリンクのご案内")
+    mail(to: @document_group.email, subject: "PDFSync：パスワード設定とPDFリンクのご案内")
   end
 end
