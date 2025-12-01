@@ -6,7 +6,7 @@ import PdfControls from "./PdfControls";
 import PdfViewer from "./PdfViewer";
 import CommentPanel from "./CommentPanel";
 import usePdfSync from "../hooks/usePdfSync";
-import useCommentSync from "../hooks/useCommentSync";
+import MemoPanel from "./MemoPanel";
 
 interface Document {
   id: number;
@@ -46,8 +46,6 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   const roleRef = useRef(role);
   const currentPageRef = useRef(currentPage);
   const currentPdfIdRef = useRef(selectedPdf?.id);
-  const [isCommentOpen, setIsCommentOpen] = useState(false);
-  const [initialComments, setInitialComments] = useState<Comment[]>([]);
   
   // 初期データを fetch
   useEffect(() => {
@@ -66,7 +64,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
           null;
         setSelectedPdf(initialPdf);
 
-        setInitialComments(json.initialComments || []);
+        
       })
       .catch((err) => console.error("Failed to fetch initial data:", err));
 
@@ -78,11 +76,6 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   const { message, broadcast, requestCurrentPage } = usePdfSync({
     documentGroupId: data?.documentGroupId || 0,
   });
-
-  const { comments, addComment, likeComment, setComments } = useCommentSync(
-  data?.documentGroupId || 0,
-  []
-);
 
 
 
@@ -160,20 +153,63 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
       win.document.head.appendChild(link.cloneNode(true));
     });
 
-  // head が揃うまで遅延して React をマウント（安全のため）
-  win.document.body.style.margin = "0";
-  win.document.title = "Comments";
+   win.document.body.style.margin = "0";
+  win.document.body.innerHTML = ""; // 初期レイアウトを完全削除
 
-  const div = win.document.createElement("div");
-  win.document.body.appendChild(div);
 
-  ReactDOM.createRoot(div).render(
-    <CommentPanel
-    documentGroupId={data?.documentGroupId || 0}
-    initialComments={initialComments} />
-  );
+
+
+
+  const root = win.document.createElement("div");
+  root.id = "react-root";
+  root.style.position = "relative"; // ← 横線消えるポイント
+  root.style.inset = "0";        // ← ウィンドウ全体を覆う
+  win.document.body.appendChild(root);
+
+  setTimeout(() => {
+    ReactDOM.createRoot(root).render(
+      <CommentPanel
+        documentGroupId={data?.documentGroupId || 0}
+        token={token}
+      />
+    );
+  }, 0);
 
   commentWindowRef.current = win;
+};
+
+
+const memoWindowRef = useRef<Window | null>(null);
+
+const openMemoWindow = () => {
+  if (memoWindowRef.current && !memoWindowRef.current.closed) {
+    memoWindowRef.current.focus();
+    return;
+  }
+
+  const win = window.open(
+    "",
+    "Memo",
+    "width=450,height=600,resizable,scrollbars=yes"
+  );
+  if (!win) return;
+
+  const parentLinks = document.querySelectorAll('link[rel="stylesheet"]');
+  parentLinks.forEach((link) => {
+    win.document.head.appendChild(link.cloneNode(true));
+  });
+
+  win.document.body.innerHTML = "";
+
+  const root = win.document.createElement("div");
+  root.id = "react-root";
+  win.document.body.appendChild(root);
+
+  setTimeout(() => {
+    ReactDOM.createRoot(root).render(<MemoPanel />);
+  }, 0);
+
+  memoWindowRef.current = win;
 };
 
 
@@ -212,6 +248,15 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
 
       <RoleSelector role={role} setRole={setRole} />
       <button className="ml-auto bg-blue-600 text-black px-2 py-1 rounded" onClick={openCommentWindow}>チャット</button>
+      
+      <button
+        className="bg-green-600 text-black px-4 py-1 rounded"
+        onClick={openMemoWindow}
+      >
+        メモ
+      </button>
+
+      
       <a
         href={selectedPdf.url}
         target="_blank"

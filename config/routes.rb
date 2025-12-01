@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   post "/documents/viewer/:token", to: "documents#viewer"
 
   get  "/documents/viewer/:token/json", to: "documents#viewer_json",  as: :viewer_documents_json
+  post "/documents/format_memo", to: "documents#format_memo"
 
   # パスワード設定用
   get   "/document_groups/password/:token", to: "document_groups#new_password", as: :new_document_group_password
