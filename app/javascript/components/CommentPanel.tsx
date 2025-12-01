@@ -11,11 +11,34 @@ interface FormData {
   content: string;
 }
 
-const CommentPanel: React.FC<CommentPanelProps> = ({ documentGroupId, initialComments }) => {
+const CommentPanel: React.FC<CommentPanelProps> = ({ documentGroupId, token }) => {
   const { comments, addComment, likeComment, setComments } = useCommentSync(documentGroupId);
   const { register, handleSubmit, reset } = useForm<FormData>();
   const listRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  
+
+  useEffect(() => {
+      let mounted = true;
+  
+      fetch(`/documents/viewer/${token}/json`)
+        .then((res) => res.json())
+        .then((json: ViewerData) => {
+          if (!mounted) return;
+          
+  
+          // 初期PDFをセット
+  
+          setComments(json.initialComments || []);
+        })
+        .catch((err) => console.error("Failed to fetch initial data:", err));
+  
+      return () => {
+        mounted = false;
+      };
+    }, [documentGroupId, token, setComments]);
+
+
 
   const onSubmit = (data: FormData) => {
     if (!data.content.trim()) return;
@@ -23,11 +46,9 @@ const CommentPanel: React.FC<CommentPanelProps> = ({ documentGroupId, initialCom
     reset();
   };
 
-   useEffect(() => {
-    setComments(initialComments);
-  }, [initialComments, setComments]);
+   
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const el = listRef.current;
     if (!el) return;
 

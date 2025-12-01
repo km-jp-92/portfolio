@@ -46,8 +46,6 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   const roleRef = useRef(role);
   const currentPageRef = useRef(currentPage);
   const currentPdfIdRef = useRef(selectedPdf?.id);
-  const [isCommentOpen, setIsCommentOpen] = useState(false);
-  const [initialComments, setInitialComments] = useState<Comment[]>([]);
   
   // 初期データを fetch
   useEffect(() => {
@@ -66,7 +64,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
           null;
         setSelectedPdf(initialPdf);
 
-        setInitialComments(json.initialComments || []);
+        
       })
       .catch((err) => console.error("Failed to fetch initial data:", err));
 
@@ -78,11 +76,6 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   const { message, broadcast, requestCurrentPage } = usePdfSync({
     documentGroupId: data?.documentGroupId || 0,
   });
-
-  const { comments, addComment, likeComment, setComments } = useCommentSync(
-  data?.documentGroupId || 0,
-  []
-);
 
 
 
@@ -177,8 +170,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
     ReactDOM.createRoot(root).render(
       <CommentPanel
         documentGroupId={data?.documentGroupId || 0}
-        initialComments={initialComments}
-        parentWindow={window}
+        token={token}
       />
     );
   }, 0);
