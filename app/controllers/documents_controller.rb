@@ -1,9 +1,9 @@
 class DocumentsController < ApplicationController
   before_action :set_document_group_by_upload_token, only: [ :index, :create, :destroy ]
-  before_action :set_document_group_by_view_token,   only: [ :viewer, :viewer_json ]
+  before_action :set_document_group_by_view_token,   only: [ :viewer, :viewer_json, :format_memo ]
   before_action :authenticate_group_password, only: [ :index, :create, :destroy ]
-  before_action :check_documents_present, only: [ :viewer, :viewer_json ]
-  before_action :authenticate_viewer_password, only: [ :viewer, :viewer_json ]
+  before_action :check_documents_present, only: [ :viewer, :viewer_json, :format_memo ]
+  before_action :authenticate_viewer_password, only: [ :viewer, :viewer_json, :format_memo ]
 
   def index
     @documents = @document_group.documents
@@ -89,6 +89,26 @@ class DocumentsController < ApplicationController
       }
     }
   }
+  end
+
+  def format_memo
+    text = params[:content].to_s
+
+    client = OpenAI::Client.new(access_token: ENV["OPENAI_API_KEY"])
+
+    response = client.chat(
+      parameters: {
+        model: "gpt-4.1-mini",
+        messages: [
+          { role: "system", content: "以下のメモを読みやすく整形してください。" },
+          { role: "user", content: text }
+        ]
+      }
+    )
+
+    formatted = response.dig("choices", 0, "message", "content").to_s
+
+    render json: { formatted: formatted }
   end
 
   private

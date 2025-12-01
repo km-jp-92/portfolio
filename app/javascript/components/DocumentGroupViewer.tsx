@@ -6,7 +6,7 @@ import PdfControls from "./PdfControls";
 import PdfViewer from "./PdfViewer";
 import CommentPanel from "./CommentPanel";
 import usePdfSync from "../hooks/usePdfSync";
-import useCommentSync from "../hooks/useCommentSync";
+import MemoPanel from "./MemoPanel";
 
 interface Document {
   id: number;
@@ -179,6 +179,40 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
 };
 
 
+const memoWindowRef = useRef<Window | null>(null);
+
+const openMemoWindow = () => {
+  if (memoWindowRef.current && !memoWindowRef.current.closed) {
+    memoWindowRef.current.focus();
+    return;
+  }
+
+  const win = window.open(
+    "",
+    "Memo",
+    "width=450,height=600,resizable,scrollbars=yes"
+  );
+  if (!win) return;
+
+  const parentLinks = document.querySelectorAll('link[rel="stylesheet"]');
+  parentLinks.forEach((link) => {
+    win.document.head.appendChild(link.cloneNode(true));
+  });
+
+  win.document.body.innerHTML = "";
+
+  const root = win.document.createElement("div");
+  root.id = "react-root";
+  win.document.body.appendChild(root);
+
+  setTimeout(() => {
+    ReactDOM.createRoot(root).render(<MemoPanel />);
+  }, 0);
+
+  memoWindowRef.current = win;
+};
+
+
 
 
 
@@ -214,6 +248,15 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
 
       <RoleSelector role={role} setRole={setRole} />
       <button className="ml-auto bg-blue-600 text-black px-2 py-1 rounded" onClick={openCommentWindow}>チャット</button>
+      
+      <button
+        className="bg-green-600 text-black px-4 py-1 rounded"
+        onClick={openMemoWindow}
+      >
+        メモ
+      </button>
+
+      
       <a
         href={selectedPdf.url}
         target="_blank"
