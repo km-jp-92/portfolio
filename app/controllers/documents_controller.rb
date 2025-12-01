@@ -94,13 +94,25 @@ class DocumentsController < ApplicationController
   def format_memo
     text = params[:content].to_s
 
+    system_prompt = <<~PROMPT
+    あなたは優秀な文章整理アシスタントです。ユーザーが入力したメモを読みやすく整形してください。以下のルールに従ってください：
+
+    1. 改行や段落を適切に整える
+    2. 箇条書きはハイフン (-) または番号で整列
+    3. 長すぎる文は短くまとめる
+    4. 日付や時間は統一フォーマットに整える
+    5. 誤字脱字を修正する
+    6. 文の意味を変えずに、読みやすさを優先する
+
+  PROMPT
+
     client = OpenAI::Client.new(access_token: ENV["OPENAI_API_KEY"])
 
     response = client.chat(
       parameters: {
         model: "gpt-4.1-mini",
         messages: [
-          { role: "system", content: "以下のメモを読みやすく整形してください。" },
+          { role: "system", content: system_prompt },
           { role: "user", content: text }
         ]
       }

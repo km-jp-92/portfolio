@@ -7,6 +7,7 @@ import PdfViewer from "./PdfViewer";
 import CommentPanel from "./CommentPanel";
 import usePdfSync from "../hooks/usePdfSync";
 import MemoPanel from "./MemoPanel";
+import Hammer from "hammerjs";
 
 interface Document {
   id: number;
@@ -214,6 +215,47 @@ const openMemoWindow = () => {
 };
 
 
+  // --- キーボード操作 ---
+useEffect(() => {
+  const handleKeydown = (e: KeyboardEvent) => {
+    switch(e.key){
+      case "ArrowRight":
+      case "ArrowDown":
+      case "Enter":
+        setCurrentPage((p) => Math.min(p + 1, numPages));
+        break;
+      case "ArrowLeft":
+      case "ArrowUp":
+      case "Backspace":
+        setCurrentPage((p) => Math.max(p - 1, 1));
+        break;
+      case "f":
+      case "F":
+        toggleFullScreen?.();
+        break;
+      case "Escape":
+        if (document.fullscreenElement) document.exitFullscreen();
+        break;
+    }
+  };
+  document.addEventListener("keydown", handleKeydown);
+  return () => document.removeEventListener("keydown", handleKeydown);
+}, [numPages, toggleFullScreen]);
+
+// --- タッチスワイプ操作（Hammer.js） ---
+useEffect(() => {
+  if (!containerRef.current) return;
+
+  const hammer = new Hammer(containerRef.current);
+  hammer.get("pan").set({ direction: Hammer.DIRECTION_HORIZONTAL });
+
+  hammer.on("panend", (e) => {
+    if (e.deltaX > 50) setCurrentPage((p) => Math.max(p - 1, 1));
+    if (e.deltaX < -50) setCurrentPage((p) => Math.min(p + 1, numPages));
+  });
+
+  return () => hammer.destroy();
+}, [numPages]);
 
 
 
