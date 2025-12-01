@@ -72,7 +72,7 @@ const MemoPanel: React.FC = ({ token }) => {
           onClick={formatMemo}
           disabled={loading}
         >
-          {loading ? "整形中..." : "AIで整形"}
+          {loading ? "整形中..." : "AIで整える"}
         </button>
 
         <button
