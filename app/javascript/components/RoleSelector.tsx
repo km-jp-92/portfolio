@@ -1,4 +1,5 @@
 import React from "react";
+import { FaChalkboardTeacher, FaUserFriends } from "react-icons/fa";
 
 interface Props {
   role: "presenter" | "audience" | null;
@@ -23,18 +24,18 @@ const RoleSelector: React.FC<Props> = ({ role, setRole }) => {
   className={`px-3 py-1 rounded ${
     role === "presenter"
       ? "bg-blue-500 text-white"
-      : "bg-gray-200 text-black"
+      : "bg-gray-100 text-gray-600"
   }`}
       >
-        発表
+        <FaChalkboardTeacher size={20} />
       </button>
       <button
         onClick={() => setRole(role === "audience" ? null : "audience")}
         className={`px-3 py-1 rounded ${
-          role === "audience" ? "bg-green-500 text-white" : "bg-gray-200 text-black"
+          role === "audience" ? "bg-green-500 text-white" : "bg-gray-100 text-gray-600"
         }`}
       >
-        聴講
+        <FaUserFriends size={20} />
       </button>
     </div>
   );

@@ -58,32 +58,34 @@ const CommentPanel: React.FC<CommentPanelProps> = ({ documentGroupId, token }) =
 
 
   return (
-    <div className="w-full h-full flex flex-col bg-white">
+    <div className="w-full h-full flex flex-col bg-gray-100 border rounded">
 
-      <div ref={listRef} className="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
+      <div ref={listRef} className="flex-1 overflow-y-auto p-3">
         {comments.map(c => (
-          <div key={c.id} className="p-3 bg-white rounded shadow border flex justify-between">
-            <div>
-              <div className="text-gray-800">{c.content}</div>
+          <div key={c.id} className="flex justify-start mb-2">
+            <div className="max-w-xs p-3 rounded-2xl shadow bg-white text-gray-800">
+              <div>{c.content}</div>
               {/*<small className="text-gray-500">{c.created_at}</small>*/}
             </div>
+            <div className="p-2">
             <button
-              className="ml-3 text-sm px-2 py-1 bg-blue-200 rounded hover:bg-blue-300"
+              className="ml-2 hover:text-blue-700"
               onClick={() => likeComment(c.id)}
             >
               👍 {c.likes_count}
             </button>
+            </div>
           </div>
         ))}
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="p-3 bg-white border-t flex flex-shrink-0"
       >
-        <input
+        <textarea
           {...register("content")}
           type="text"
-          placeholder="コメントを入力"
-          className="flex-1 px-3 py-2 border rounded mr-3"
+          placeholder="全員にメッセージを送信"
+          className="flex-1 px-3 py-2 h-24 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
         <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
           送信

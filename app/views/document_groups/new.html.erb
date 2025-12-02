@@ -1,155 +1,146 @@
-<div class="min-h-screen bg-gradient-to-b from-indigo-50 to-indigo-100 flex flex-col items-center justify-start px-6 py-12 space-y-16">
+<!-- 固定ヘッダー（ロゴ + ナビ） -->
+<header class="w-full fixed top-0 left-0 bg-white/90 backdrop-blur shadow-sm z-50">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+    <div class="text-2xl font-extrabold text-blue-700 tracking-tight drop-shadow-sm">PDFSync</div>
 
-<!-- タイトル & サブコピー -->
-<div class="text-center mb-12 space-y-4">
+    <nav class="hidden md:flex space-x-6 text-blue-800 font-medium">
+      <a href="#features" class="hover:text-blue-600 flex items-center">機能</a>
+      <a href="#scenes" class="hover:text-blue-600 flex items-center">利用シーン</a>
+      <a href="#flow" class="hover:text-blue-600 flex items-center">使い方</a>
+      <label for="emailModal" class="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 shadow">今すぐ始める</label>
+    </nav>
+  </div>
+</header>
 
-  <!-- メインタイトル -->
-  <h1 class="text-5xl md:text-5xl font-extrabold text-indigo-900 tracking-tight drop-shadow-md">
-    PDFSync
-  </h1>
+<!-- 全体ラップ -->
+<div class="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 flex flex-col items-center justify-start px-6 pt-36 pb-20 space-y-20">
 
-  <!-- サブコピー（独立・拡大表示） -->
-  <p class="text-3xl md:text-3xl font-semibold text-indigo-800 mt-2">
-    会議・打ち合わせ・勉強会をもっと効率的に。
-  </p>
+<!-- Hero セクション -->
+<section class="text-center max-w-4xl mx-auto">
 
-  <!-- キーワード強調付き説明 -->
-  <p class="text-xl md:text-2xl font-medium text-gray-700 max-w-3xl mx-auto mt-4">
+  <p class="text-3xl md:text-3xl font-semibold text-blue-800">会議・打ち合わせ・勉強会をもっと効率的に。</p>
+
+  <p class="text-xl md:text-2xl font-medium text-gray-700 mt-6 leading-relaxed">
     PDF資料の 
-    <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 font-semibold">
-      リアルタイムページ同期
-    </span>、匿名コメント、個人メモ（AI整形付き）で会議をスマートに。  
-    発表者がページをめくると参加者の画面も自動切り替え。  
-    <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 font-semibold">
-      アカウント登録不要ですぐに打ち合わせを開始可能
-    </span>
+    <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400 font-semibold">リアルタイムページ同期</span>、チャット、<br>個人メモ（AI整形付き）で会議をスマートに。
+    <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400 font-semibold"><br>アカウント登録不要ですぐに開始可能</span>
   </p>
 
+  <div class="mt-12">
+    <label for="emailModal" class="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-xl px-10 py-4 rounded-2xl shadow-xl hover:scale-105 transition">今すぐ始める</label>
+  </div>
+</section>
+
+<!-- 特徴・メリット -->
+<section id="features" class="w-full max-w-6xl mx-auto text-center">
+  <h2 class="text-3xl font-bold text-blue-900 mb-10">主な機能</h2>
+
+  <div class="grid gap-10 md:grid-cols-3">
+    <div class="flex flex-col items-center bg-white rounded-3xl shadow-2xl p-10 hover:-translate-y-2 hover:scale-105 transition-all">
+      <div class="text-6xl mb-4 text-blue-600">📄</div>
+      <h3 class="text-2xl font-bold text-blue-700 mb-2">PDFページ同期</h3>
+      <p class="text-blue-800">発表者がページをめくると、参加者も自動切り替え。リアル会議でも議論がスムーズに。</p>
+    </div>
+
+    <div class="flex flex-col items-center bg-white rounded-3xl shadow-2xl p-10 hover:-translate-y-2 hover:scale-105 transition-all">
+      <div class="text-6xl mb-4 text-blue-500">💬</div>
+      <h3 class="text-2xl font-bold text-blue-700 mb-2">チャット（匿名）</h3>
+      <p class="text-blue-800">発言しにくい人も匿名で意見や質問を投稿可能。多様な視点が集まる会議に。</p>
+    </div>
+
+    <div class="flex flex-col items-center bg-white rounded-3xl shadow-2xl p-10 hover:-translate-y-2 hover:scale-105 transition-all">
+      <div class="text-6xl mb-4 text-blue-500">📝</div>
+      <h3 class="text-2xl font-bold text-blue-700 mb-2">個人メモ＆AI整形</h3>
+      <p class="text-blue-800">個人メモを AI が整理するため、議事録作成や後からの振り返りも簡単。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 利用シーン -->
+<section id="scenes" class="w-full max-w-5xl mx-auto text-center">
+  <h2 class="text-3xl font-bold text-blue-900 mb-10">利用シーン</h2>
+
+  <div class="grid gap-8 md:grid-cols-3">
+    <div class="flex flex-col items-center p-8 bg-gradient-to-r from-blue-100 to-blue-50 rounded-3xl shadow-lg hover:-translate-y-1 transition">
+      <div class="text-6xl mb-4">🎓</div>
+      <h3 class="text-xl font-bold text-blue-700 mb-2">セミナー・勉強会</h3>
+      <p class="text-blue-900">講師が資料を表示するだけで、参加者の画面も自動更新。質問やコメントも共有しやすい。</p>
+    </div>
+
+    <div class="flex flex-col items-center p-8 bg-gradient-to-r from-blue-100 to-blue-50 rounded-3xl shadow-lg hover:-translate-y-1 transition">
+      <div class="text-6xl mb-4">♻️</div>
+      <h3 class="text-xl font-bold text-blue-700 mb-2">ペーパーレス会議</h3>
+      <p class="text-blue-900">印刷いらずで環境にも優しい。事前準備の負担も軽減。</p>
+    </div>
+
+    <div class="flex flex-col items-center p-8 bg-gradient-to-r from-blue-100 to-blue-50 rounded-3xl shadow-lg hover:-translate-y-1 transition">
+      <div class="text-6xl mb-4">🤝</div>
+      <h3 class="text-xl font-bold text-blue-700 mb-2">打ち合わせ</h3>
+      <p class="text-blue-900">PDFをアップロードするだけで準備完了。参加者は URL へアクセスするだけ。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 使い方の流れ -->
+<section id="flow" class="w-full max-w-5xl mx-auto text-center">
+  <h2 class="text-3xl font-bold text-blue-900 mb-10">使い方の流れ</h2>
+
+  <div class="grid gap-6 md:grid-cols-4">
+    <div class="p-6 bg-white rounded-3xl shadow-lg hover:-translate-y-1 transition">
+      <div class="text-4xl font-bold text-blue-600 mb-2">1</div>
+      <p class="font-semibold text-blue-700 mb-1">メールアドレス入力</p>
+      <p class="text-blue-800">専用URLを受け取るためにメールアドレスを入力。</p>
+    </div>
+
+    <div class="p-6 bg-white rounded-3xl shadow-lg hover:-translate-y-1 transition">
+      <div class="text-4xl font-bold text-blue-600 mb-2">2</div>
+      <p class="font-semibold text-blue-700 mb-1">PDFアップロード</p>
+      <p class="text-blue-800">パスワード設定でアクセス管理も安心。</p>
+    </div>
+
+    <div class="p-6 bg-white rounded-3xl shadow-lg hover:-translate-y-1 transition">
+      <div class="text-4xl font-bold text-blue-600 mb-2">3</div>
+      <p class="font-semibold text-blue-700 mb-1">閲覧URLを共有</p>
+      <p class="text-blue-800">参加者へ URL とパスワードを送るだけ。</p>
+    </div>
+
+    <div class="p-6 bg-white rounded-3xl shadow-lg hover:-translate-y-1 transition">
+      <div class="text-4xl font-bold text-blue-600 mb-2">4</div>
+      <p class="font-semibold text-blue-700 mb-1">同期＆チャット</p>
+      <p class="text-blue-800">ページ同期と匿名チャットで議論・質問がスムーズ。</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA ボタン -->
+<div class="text-center mt-12">
+  <label for="emailModal" class="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-xl px-10 py-4 rounded-2xl shadow-xl hover:scale-105 transition">今すぐ始める</label>
 </div>
 
-  <!-- 特徴・メリット見出し -->
-  <h2 class="text-3xl font-bold text-indigo-900 mb-6">特徴・メリット</h2>
+<!-- メール入力モーダル -->
+<input type="checkbox" id="emailModal" class="modal-toggle" />
+<div class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box max-w-md p-8 rounded-3xl shadow-2xl">
+    <h3 class="font-bold text-xl text-blue-900 mb-4">会議を始めるためにメールアドレスを入力</h3>
+    <p class="text-sm text-gray-500 mb-6">入力いただいたメールアドレスにPDFアップロード・閲覧用URLが届きます。</p>
 
-  <!-- 特徴・メリット（アイコン付き横並び） -->
-  <div class="grid gap-8 md:grid-cols-3 w-full max-w-6xl text-center mb-12">
-    <div class="flex flex-col items-center bg-white rounded-3xl shadow-2xl p-8 transform hover:-translate-y-2 hover:scale-105 transition-all">
-      <div class="text-6xl mb-4 text-indigo-600">📄</div>
-      <h3 class="text-2xl font-bold text-indigo-700 mb-2">PDFページ同期</h3>
-      <p class="text-indigo-800">
-        発表者がページをめくると、参加者の画面も自動切り替え。全員で同じ資料を確認できるので、リアル会議でも議論がスムーズで時間効率が大幅アップ。
-      </p>
-    </div>
-    <div class="flex flex-col items-center bg-white rounded-3xl shadow-2xl p-8 transform hover:-translate-y-2 hover:scale-105 transition-all">
-      <div class="text-6xl mb-4 text-green-600">💬</div>
-      <h3 class="text-2xl font-bold text-green-700 mb-2">匿名コメント</h3>
-      <p class="text-green-800">
-        発言しにくい方も匿名で意見や質問を投稿可能。リアル会議でも多様な視点を議論に反映でき、アイデアや問題点の取りこぼしがありません。
-      </p>
-    </div>
-    <div class="flex flex-col items-center bg-white rounded-3xl shadow-2xl p-8 transform hover:-translate-y-2 hover:scale-105 transition-all">
-      <div class="text-6xl mb-4 text-purple-600">📝</div>
-      <h3 class="text-2xl font-bold text-purple-700 mb-2">個人メモ＆AI整形</h3>
-      <p class="text-purple-800">
-        個人別にメモを作成可能。AIが整理・整形するので後で読み返しても理解しやすく、議事録作成もスムーズ。会議後の情報整理も簡単です。
-      </p>
-    </div>
+    <%= form_with model: @document_group, data: { turbo: false }, class: "flex flex-col space-y-4" do |f| %>
+      <%= f.email_field :email, required: true, placeholder: "example@example.com", class: "input input-bordered w-full focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+
+      <div class="modal-action flex flex-col space-y-2">
+        <%= f.submit "送信", class: "btn btn-primary w-full bg-blue-500 text-white hover:bg-blue-600" %>
+        <label for="emailModal" class="btn btn-ghost w-full bg-gray-100 text-gray-500 hover:bg-gray-200">キャンセル</label>
+      </div>
+    <% end %>
   </div>
+</div>
 
-  
-
-
-
-  <!-- 利用シーン見出し -->
-  <h2 class="text-3xl font-bold text-indigo-900 mb-6">利用シーン</h2>
-
-  <!-- 利用シーン（イラスト風アイコンと説明） -->
-  <div class="grid gap-8 md:grid-cols-3 max-w-5xl w-full text-center mb-12">
-    <div class="flex flex-col items-center p-6 bg-gradient-to-r from-indigo-100 to-indigo-50 rounded-3xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
-      <div class="text-6xl mb-4">🎓</div>
-      <h3 class="text-xl font-bold text-indigo-700 mb-2">セミナー・勉強会</h3>
-      <p class="text-indigo-900">
-        講師が資料を表示するだけで、参加者の画面も自動更新。リアルの学習会でも質問やコメントがすぐ共有され、学習効果を最大化。
-      </p>
-    </div>
-    <div class="flex flex-col items-center p-6 bg-gradient-to-r from-green-100 to-green-50 rounded-3xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
-      <div class="text-6xl mb-4">♻️</div>
-      <h3 class="text-xl font-bold text-green-700 mb-2">ペーパーレス会議</h3>
-      <p class="text-green-900">
-        紙資料不要で環境に優しい。最新情報も即座に全員で共有可能。印刷や配布の手間を削減し、会議準備の負担も軽減。タブレット端末にも対応。
-      </p>
-    </div>
-    <div class="flex flex-col items-center p-6 bg-gradient-to-r from-purple-100 to-purple-50 rounded-3xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
-      <div class="text-6xl mb-4">🤝</div>
-      <h3 class="text-xl font-bold text-purple-700 mb-2">打ち合わせ</h3>
-      <p class="text-purple-900">
-        PDFをアップロードするだけで準備完了。参加者はアカウント不要でURLにアクセスするだけ。リアルの打ち合わせでも議論やアイデア出しに集中。
-      </p>
-    </div>
-  </div>
-
-  
-
-
-  <!-- 使い方の流れ見出し -->
-  <h2 class="text-3xl font-bold text-indigo-900 mb-6">使い方の流れ</h2>
-
-  <div class="grid gap-6 md:grid-cols-4 w-full max-w-5xl text-center mb-12">
-    <div class="flex flex-col items-center p-6 bg-white rounded-3xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
-      <div class="text-4xl font-bold text-purple-600 mb-2">1</div>
-      <p class="font-semibold text-purple-700 mb-1">メールアドレス入力</p>
-      <p class="text-indigo-800">専用URLを受け取るためにメールアドレスを入力。手間なくすぐに開始できます。</p>
-    </div>
-    <div class="flex flex-col items-center p-6 bg-white rounded-3xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
-      <div class="text-4xl font-bold text-purple-600 mb-2">2</div>
-      <p class="font-semibold text-purple-700 mb-1">PDFアップロード</p>
-      <p class="text-indigo-800">専用URLからPDFをアップロード。パスワード設定でアクセス管理も安心です。</p>
-    </div>
-    <div class="flex flex-col items-center p-6 bg-white rounded-3xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
-      <div class="text-4xl font-bold text-purple-600 mb-2">3</div>
-      <p class="font-semibold text-purple-700 mb-1">会議URLを参加者と共有</p>
-      <p class="text-indigo-800">届いた会議URLを参加者に共有するだけで、すぐに会議に参加可能。複雑な手続きは不要です。</p>
-    </div>
-    <div class="flex flex-col items-center p-6 bg-white rounded-3xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
-      <div class="text-4xl font-bold text-purple-600 mb-2">4</div>
-      <p class="font-semibold text-purple-700 mb-1">リアルタイム同期＆コメント</p>
-      <p class="text-indigo-800">発表者がページをめくると参加者の画面も自動更新。匿名コメント・個人メモで議論整理も簡単。</p>
-    </div>
-  </div>
-
-  <!-- CTAボタン（モーダル） -->
-  <label for="emailModal" class="btn btn-primary btn-lg mt-12 shadow-lg hover:scale-105 transition transform cursor-pointer">
-    今すぐ始める
-  </label>
-
-  <!-- メール入力モーダル -->
-  <input type="checkbox" id="emailModal" class="modal-toggle" />
-  <div class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box max-w-md p-8 rounded-3xl shadow-2xl">
-      <h3 class="font-bold text-xl text-indigo-900 mb-4">会議を始めるためにメールアドレスを入力</h3>
-      <p class="text-sm text-gray-500 mb-6">
-        入力いただいたメールアドレスにPDFアップロード用のURLが届きます。  
-        他の目的には使用されません。
-      </p>
-      <%= form_with model: @document_group, data: { turbo: false }, class: "flex flex-col space-y-4" do |f| %>
-        <%= f.email_field :email, required: true, placeholder: "example@example.com", class: "input input-bordered w-full focus:outline-none focus:ring-2 focus:ring-indigo-500" %>
-        <div class="modal-action flex flex-col space-y-2">
-          <%= f.submit "送信", class: "btn btn-primary w-full" %>
-          <label for="emailModal" class="btn btn-ghost w-full">キャンセル</label>
-        </div>
-      <% end %>
-    </div>
-  </div>
-
-  <!-- プライバシーポリシー & 利用規約 -->
-  <div class="mt-16 text-center text-sm text-gray-500">
-    <a href="/privacy" class="underline hover:text-gray-700">プライバシーポリシー</a>
-    <span class="mx-2">|</span>
-    <a href="/terms" class="underline hover:text-gray-700">利用規約</a>
-    <span class="mx-2">|</span>
-    <a href="https://x.com/pdfsyncapp" target="_blank" class="underline hover:text-gray-700">
-      お問い合わせ（X）
-    </a>
-  </div>
+<!-- フッター -->
+<footer class="mt-20 text-center text-sm text-gray-500">
+  <a href="/privacy" class="underline hover:text-gray-700 mx-2">プライバシーポリシー</a>
+  <span class="mx-2">|</span>
+  <a href="/terms" class="underline hover:text-gray-700 mx-2">利用規約</a>
+</footer>
 
 </div>
 

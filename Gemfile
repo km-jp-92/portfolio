@@ -74,3 +74,5 @@ gem "rqrcode", "~> 3.0"
 gem "rack-attack", "~> 6.8"
 
 gem "ruby-openai"
+
+gem "meta-tags"

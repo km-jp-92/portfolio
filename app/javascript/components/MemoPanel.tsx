@@ -57,18 +57,19 @@ const MemoPanel: React.FC = ({ token }) => {
   };
 
   return (
-    <div className="p-4 bg-white h-full flex flex-col">
+    <div className="h-full flex flex-col">
 
       <textarea
-        className="flex-1 border rounded p-3 w-full mb-3"
+        className="mx-2 mt-2 mb-2 border rounded resize-none shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-400"
         value={text}
         onChange={handleChange}
-        placeholder="ここに個人用メモを書いてください"
+        placeholder="個人用メモを入力"
+        rows={10}
       />
 
-      <div className="flex space-x-3">
+      <div className="flex space-x-3 justify-center">
         <button
-          className="px-4 py-2 bg-blue-500 text-white rounded"
+          className="px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
           onClick={formatMemo}
           disabled={loading}
         >
@@ -76,7 +77,7 @@ const MemoPanel: React.FC = ({ token }) => {
         </button>
 
         <button
-          className="px-4 py-2 bg-green-500 text-white rounded"
+          className="px-5 py-2 bg-green-500 text-white rounded hover:bg-green-600"
           onClick={downloadMemo}
         >
           ダウンロード
