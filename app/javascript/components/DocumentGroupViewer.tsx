@@ -290,10 +290,10 @@ useEffect(() => {
       />
 
       <RoleSelector role={role} setRole={setRole} />
-      <button className="ml-auto bg-blue-600 text-black px-2 py-1 rounded" onClick={openCommentWindow}>チャット</button>
+      <button className="text-black px-2 py-1 rounded" onClick={openCommentWindow}>チャット</button>
       
       <button
-        className="bg-green-600 text-black px-4 py-1 rounded"
+        className="text-black px-4 py-1 rounded"
         onClick={openMemoWindow}
       >
         メモ
