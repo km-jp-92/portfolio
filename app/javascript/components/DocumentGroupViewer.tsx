@@ -247,23 +247,30 @@ useEffect(() => {
 useEffect(() => {
   if (!containerRef.current) return;
 
-  const hammer = new Hammer.Manager(containerRef.current);
-  const pan = new Hammer.Pan({ direction: Hammer.DIRECTION_HORIZONTAL });
-  const pinch = new Hammer.Pinch();
+  const el = containerRef.current;
 
-  hammer.add([pan, pinch]);
+  // フルスクリーンでない場合は Hammer を作らない
+  if (!isFullscreen) return;
+
+  // 横スワイプのみ許可（縦スクロールはブラウザに任せる）
+  el.style.touchAction = "pan-y";
+
+  const hammer = new Hammer(el);
+  const pan = new Hammer.Pan({ direction: Hammer.DIRECTION_HORIZONTAL });
+  hammer.add(pan);
 
   hammer.on("panend", (e) => {
+    // 50px以上の移動でページ送り
     if (e.deltaX > 50) setCurrentPage((p) => Math.max(p - 1, 1));
     if (e.deltaX < -50) setCurrentPage((p) => Math.min(p + 1, numPages));
   });
 
-  hammer.on("pinchmove", (e) => {
-    setScale((s) => Math.min(3, Math.max(0.5, s * e.scale)));
-  });
+  return () => {
+    hammer.destroy();
+    el.style.touchAction = "";
+  };
+}, [numPages, isFullscreen]);
 
-  return () => hammer.destroy();
-}, [numPages]);
 
 
 
