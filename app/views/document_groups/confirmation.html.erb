@@ -1,5 +1,38 @@
-<div class="flex justify-center items-center h-32">
-  <h1 class="text-base font-semibold text-gray-700">
-    メールをお送りしましたのでご確認ください
-  </h1>
+<!-- 固定ヘッダー -->
+<header class="w-full fixed top-0 left-0 bg-white/90 backdrop-blur shadow-sm z-50">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+    <div class="text-2xl font-extrabold text-blue-700 tracking-tight drop-shadow-sm">PDFSync</div>
+    <nav class="hidden md:flex space-x-6 text-blue-800 font-medium">
+      <a href="/" class="hover:text-blue-600">トップページ</a>
+    </nav>
+  </div>
+</header>
+
+<div class="bg-gradient-to-b from-blue-50 to-blue-100">
+
+<!-- メインコンテンツ -->
+<div class="min-h-screen flex flex-col items-center justify-center">
+  <div class="bg-white rounded-3xl shadow-2xl p-10 max-w-lg text-center space-y-6">
+    <div class="flex justify-center items-center h-16">
+      <h1 class="text-lg md:text-xl font-semibold text-gray-700">
+        メールをお送りしましたのでご確認ください
+      </h1>
+    </div>
+
+    <p class="text-gray-500">
+      入力いただいたメールアドレス宛に、PDFアップロード・閲覧用URLが届きます。
+    </p>
+
+    <a href="/" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium shadow transition">
+      トップページに戻る
+    </a>
+  </div>
+</div>
+
+<!-- フッター -->
+<footer class="text-center text-sm text-gray-500">
+  <a href="/privacy" class="underline hover:text-gray-700 mx-2">プライバシーポリシー</a>
+  <span class="mx-2">|</span>
+  <a href="/terms" class="underline hover:text-gray-700 mx-2">利用規約</a>
+</footer>
 </div>
