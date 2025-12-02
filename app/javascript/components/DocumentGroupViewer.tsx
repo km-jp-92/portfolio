@@ -247,12 +247,19 @@ useEffect(() => {
 useEffect(() => {
   if (!containerRef.current) return;
 
-  const hammer = new Hammer(containerRef.current);
-  hammer.get("pan").set({ direction: Hammer.DIRECTION_HORIZONTAL });
+  const hammer = new Hammer.Manager(containerRef.current);
+  const pan = new Hammer.Pan({ direction: Hammer.DIRECTION_HORIZONTAL });
+  const pinch = new Hammer.Pinch();
+
+  hammer.add([pan, pinch]);
 
   hammer.on("panend", (e) => {
     if (e.deltaX > 50) setCurrentPage((p) => Math.max(p - 1, 1));
     if (e.deltaX < -50) setCurrentPage((p) => Math.min(p + 1, numPages));
+  });
+
+  hammer.on("pinchmove", (e) => {
+    setScale((s) => Math.min(3, Math.max(0.5, s * e.scale)));
   });
 
   return () => hammer.destroy();

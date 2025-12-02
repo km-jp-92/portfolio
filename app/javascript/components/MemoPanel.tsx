@@ -60,10 +60,10 @@ const MemoPanel: React.FC = ({ token }) => {
     <div className="h-full flex flex-col">
 
       <textarea
-        className="w-full p-4 mb-4 border rounded resize-none shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="mx-2 mt-2 mb-2 border rounded resize-none shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-400"
         value={text}
         onChange={handleChange}
-        placeholder="ここに個人用メモを入力"
+        placeholder="個人用メモを入力"
         rows={10}
       />
 
