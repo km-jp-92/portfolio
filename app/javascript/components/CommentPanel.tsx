@@ -15,39 +15,34 @@ const CommentPanel: React.FC<CommentPanelProps> = ({ documentGroupId, token }) =
   const { comments, addComment, likeComment, setComments } = useCommentSync(documentGroupId);
   const { register, handleSubmit, reset } = useForm<FormData>();
   const listRef = useRef<HTMLDivElement>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
-  
 
+  // 初期コメントの取得
   useEffect(() => {
-      let mounted = true;
-  
-      fetch(`/documents/viewer/${token}/json`)
-        .then((res) => res.json())
-        .then((json: ViewerData) => {
-          if (!mounted) return;
-          
-  
-          // 初期PDFをセット
-  
-          setComments(json.initialComments || []);
-        })
-        .catch((err) => console.error("Failed to fetch initial data:", err));
-  
+    let mounted = true;
+
+    fetch(`/documents/viewer/${token}/json`)
+      .then((res) => res.json())
+      .then((json: ViewerData) => {
+        if (!mounted) return;
+
+        // 初期PDFをセット
+        setComments(json.initialComments || []);
+      })
+      .catch((err) => console.error("Failed to fetch initial data:", err));
+
       return () => {
         mounted = false;
       };
-    }, [documentGroupId, token, setComments]);
+  }, [documentGroupId, token, setComments]);
 
-
-
+  // コメント送信処理
   const onSubmit = (data: FormData) => {
     if (!data.content.trim()) return;
     addComment(data.content.trim());
     reset();
   };
 
-   
-
+  // コメント自動スクロール
   useEffect(() => {
     const el = listRef.current;
     if (!el) return;
@@ -55,7 +50,6 @@ const CommentPanel: React.FC<CommentPanelProps> = ({ documentGroupId, token }) =
     // 一番下にスクロール
     el.scrollTop = el.scrollHeight;
   }, [comments]);
-
 
   return (
     <div className="w-full h-full flex flex-col bg-gray-100 border rounded">
@@ -68,19 +62,18 @@ const CommentPanel: React.FC<CommentPanelProps> = ({ documentGroupId, token }) =
               {/*<small className="text-gray-500">{c.created_at}</small>*/}
             </div>
             <div className="p-2">
-            <button
-              className="ml-2 hover:text-blue-700"
-              onClick={() => likeComment(c.id)}
-            >
-              👍 {c.likes_count}
-            </button>
+              <button
+                className="ml-2 hover:text-blue-700"
+                onClick={() => likeComment(c.id)}
+              >
+                👍 {c.likes_count}
+              </button>
             </div>
           </div>
         ))}
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="p-3 bg-white border-t flex flex-shrink-0"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="p-3 bg-white border-t flex flex-shrink-0">
         <textarea
           {...register("content")}
           type="text"
