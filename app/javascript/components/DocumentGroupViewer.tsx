@@ -67,8 +67,6 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
           json.documents[0] ||
           null;
         setSelectedPdf(initialPdf);
-
-        
       })
       .catch((err) => console.error("Failed to fetch initial data:", err));
 
@@ -80,6 +78,9 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   // --- カスタムフックusePdfSyncを呼び出し ---
   const { message, broadcast, requestCurrentPage } = usePdfSync({
     documentGroupId: data?.documentGroupId || 0,
+    roleRef,
+    currentPageRef,
+    currentPdfIdRef,
   });
 
   // --- 聴講者が発表者のページを受け取る ---
