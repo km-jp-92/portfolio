@@ -98,6 +98,13 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
     }
   }, [role]);
 
+  useEffect(() => {
+  if (role === "presenter") {
+    broadcast(selectedPdf?.id, currentPage);
+  }
+}, [role]);
+
+
   useEffect(() => { roleRef.current = role; }, [role]);
   useEffect(() => { currentPageRef.current = currentPage; }, [currentPage]);
   useEffect(() => { currentPdfIdRef.current = selectedPdf?.id; }, [selectedPdf]);
