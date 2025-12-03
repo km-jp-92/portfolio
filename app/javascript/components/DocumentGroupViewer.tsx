@@ -8,7 +8,7 @@ import CommentPanel from "./CommentPanel";
 import usePdfSync from "../hooks/usePdfSync";
 import MemoPanel from "./MemoPanel";
 import Hammer from "hammerjs";
-import { FaComments, FaStickyNote, FaFilePdf } from "react-icons/fa";
+import { FaComments, FaStickyNote, FaFilePdf, FaDownload } from "react-icons/fa";
 
 interface Document {
   id: number;
@@ -306,21 +306,29 @@ useEffect(() => {
 
       <RoleSelector role={role} setRole={setRole} />
       <button
-        className="px-2 rounded"
+        className="px-3 rounded"
         onClick={openCommentWindow}><FaComments size={20} color="#4B5563" /></button>
       
       <button
-        className="px-4 rounded"
+        className="px-3 rounded"
         onClick={openMemoWindow}
       >
         <FaStickyNote size={20} color="#4B5563" />
       </button>
 
-      
+      <a
+  href={selectedPdf.url}         // 選択中のPDF
+  download={selectedPdf.name}    // ファイル名を指定
+  className="px-3 rounded"
+  >
+  <FaDownload size={20} color="#4B5563"  />
+</a>
+
+
       <a
         href={selectedPdf.url}
         target="_blank"
-        className="px-2"
+        className="px-3"
       >
         <FaFilePdf size={20} color="#4B5563" />
       </a>
