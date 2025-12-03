@@ -8,9 +8,9 @@ export interface Comment {
   created_at: string;
 }
 
-export default function useCommentSync(documentGroupId: number, initialComments: Comment[] = []) {
+export default function useCommentSync(documentGroupId: number) {
   const subscriptionRef = useRef<any>(null);
-  const [comments, setComments] = useState<Comment[]>(initialComments);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
     if (!documentGroupId) return;
