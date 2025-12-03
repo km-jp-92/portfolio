@@ -4,11 +4,23 @@ import useCommentSync from "../hooks/useCommentSync";
 
 interface CommentPanelProps {
   documentGroupId: number;
-  initialComments: any[];
+  token: string;
+  initialComments?: Comment[];
+}
+
+interface Comment {
+  id: number;
+  content: string;
+  likes_count: number;
+  created_at?: string;
 }
 
 interface FormData {
   content: string;
+}
+
+interface ViewerData {
+  initialComments: Comment[];
 }
 
 const CommentPanel: React.FC<CommentPanelProps> = ({ documentGroupId, token }) => {
