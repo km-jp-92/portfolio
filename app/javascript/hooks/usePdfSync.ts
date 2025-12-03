@@ -1,7 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import consumer from "../channels/consumer";
 
-export default function usePdfSync({ documentGroupId, roleRef, currentPageRef, currentPdfIdRef }) {
+interface UsePdfSyncProps {
+  documentGroupId: number;
+  roleRef: React.RefObject<"presenter" | "audience" | null>;
+  currentPageRef: React.RefObject<number>;
+  currentPdfIdRef: React.RefObject<number | undefined>;
+}
+
+export default function usePdfSync({
+  documentGroupId,
+  roleRef,
+  currentPageRef,
+  currentPdfIdRef,
+}: UsePdfSyncProps) {
   const [message, setMessage] = useState(null);
   const subscriptionRef = useRef(null);
 
