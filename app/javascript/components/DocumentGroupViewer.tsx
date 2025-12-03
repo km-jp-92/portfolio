@@ -48,8 +48,10 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   const roleRef = useRef(role);
   const currentPageRef = useRef(currentPage);
   const currentPdfIdRef = useRef(selectedPdf?.id);
+  const commentWindowRef = useRef<Window | null>(null);
+  const memoWindowRef = useRef<Window | null>(null);
   
-  // 初期データを fetch
+  // --- 初期データを fetch ---
   useEffect(() => {
     let mounted = true;
 
@@ -75,12 +77,12 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
     };
   }, [token]);
 
+  // --- カスタムフックusePdfSyncを呼び出し ---
   const { message, broadcast, requestCurrentPage } = usePdfSync({
     documentGroupId: data?.documentGroupId || 0,
   });
 
-
-
+  // --- 聴講者が発表者のページを受け取る ---
   useEffect(() => {
     if (!message) return;
     if (role !== "audience") return;
@@ -92,23 +94,30 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
     }
   }, [message, role, data]);
 
+  // --- 聴講者が後から参加した場合に発表者のページを受け取る ---
   useEffect(() => {
     if (role === "audience") {
       requestCurrentPage();
     }
   }, [role]);
 
+  // --- 発表者が後から参加した場合に聴講者にページを送る ---
   useEffect(() => {
-  if (role === "presenter") {
-    broadcast(selectedPdf?.id, currentPage);
-  }
-}, [role]);
+    if (role === "presenter") {
+      broadcast(selectedPdf?.id, currentPage);
+    }
+  }, [role]);
 
-
+  // --- 状態role（発表者 or 聴講者）をrefにコピーして保持 ---
   useEffect(() => { roleRef.current = role; }, [role]);
+
+  // --- 現在のページ番号 currentPageをrefにコピーして保持 ---
   useEffect(() => { currentPageRef.current = currentPage; }, [currentPage]);
+  
+  // --- 現在表示中のPDFのIDをrefにコピーして保持 ---
   useEffect(() => { currentPdfIdRef.current = selectedPdf?.id; }, [selectedPdf]);
 
+  // --- フルスクリーンの ON/OFF を切り替える関数 ---
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
       containerRef.current?.requestFullscreen();
@@ -117,238 +126,260 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
     }
   };
 
+  // --- ユーザーがF11やESCでフルスクリーンを切り替えた場合もstateが同期される ---
   useEffect(() => {
-      const handleChange = () => {
-        setIsFullscreen(Boolean(document.fullscreenElement));
-      };
-      document.addEventListener("fullscreenchange", handleChange);
-      return () => document.removeEventListener("fullscreenchange", handleChange);
-    }, []);
+    const handleChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+    document.addEventListener("fullscreenchange", handleChange);
+    return () => document.removeEventListener("fullscreenchange", handleChange);
+  }, []);
 
+  // --- ヘッダー高さの計算とウィンドウリサイズ対応 ---
   useEffect(() => {
-  const updateHeight = () => {
-    if (topRef.current) {
-      setHeaderHeight(topRef.current.offsetHeight);
+    const updateHeight = () => {
+      if (topRef.current) {
+        setHeaderHeight(topRef.current.offsetHeight);
+      }
+    };
+
+    updateHeight(); // 初期値の設定
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
+
+  // --- PDFの表示領域をフルスクリーン・通常画面に応じて最適化する変数（PdfViewerで利用） ---
+  const availableHeight = isFullscreen
+    ? window.innerHeight
+    : window.innerHeight - headerHeight;
+
+  // --- コメント用の別ウィンドウを開き、そこにCommentPanelをレンダリングする関数 ---
+  const openCommentWindow = () => {
+    // 既存のウィンドウがあれば再利用
+    if (commentWindowRef.current && !commentWindowRef.current.closed) {
+      commentWindowRef.current.focus();
+      return;
     }
+
+    // 新しいポップアップウィンドウを開く
+    const win = window.open(
+      "",
+      "Comments",
+      "width=400,height=600,resizable,scrollbars=yes"
+    );
+    if (!win) return;
+
+    // 親ウィンドウのCSSをコピー（Firefoxのみ不可）
+    const parentLinks = document.querySelectorAll('link[rel="stylesheet"]');
+      parentLinks.forEach((link) => {
+        win.document.head.appendChild(link.cloneNode(true));
+      });
+
+    // ウィンドウ内のHTMLをリセット
+    win.document.body.style.margin = "0";
+    win.document.body.innerHTML = ""; // 初期レイアウトを完全削除
+
+    // Reactを描画するためのroot要素を作成
+    const root = win.document.createElement("div");
+    root.id = "react-root";
+    root.style.position = "relative";
+    //root.style.inset = "0";
+    win.document.body.appendChild(root);
+
+    // Reactコンポーネントをマウント（0ms遅延でDOM構築完了後にReactをレンダリング）
+    setTimeout(() => {
+      ReactDOM.createRoot(root).render(
+        <CommentPanel
+          documentGroupId={data?.documentGroupId || 0}
+          token={token}
+        />
+     );
+    }, 0);
+
+    // ウィンドウの参照を保存
+    commentWindowRef.current = win;
   };
 
-  updateHeight();
-  window.addEventListener("resize", updateHeight);
-  return () => window.removeEventListener("resize", updateHeight);
-}, []);
+  // --- メモ用の別ウィンドウを開き、そこにMemoPanelをレンダリングする関数 ---
+  const openMemoWindow = () => {
+    // 既存のウィンドウがあれば再利用
+    if (memoWindowRef.current && !memoWindowRef.current.closed) {
+      memoWindowRef.current.focus();
+      return;
+    }
 
-  const availableHeight = isFullscreen
-  ? window.innerHeight
-  : window.innerHeight - headerHeight;
+    // 新しいウィンドウを開く
+    const win = window.open(
+      "",
+      "Memo",
+      "width=450,height=600,resizable,scrollbars=yes"
+    );
+    if (!win) return;
 
-
-  const commentWindowRef = useRef<Window | null>(null);
-
-  const openCommentWindow = () => {
-  if (commentWindowRef.current && !commentWindowRef.current.closed) {
-    commentWindowRef.current.focus();
-    return;
-  }
-
-  const win = window.open(
-    "",
-    "Comments",
-    "width=400,height=600,resizable,scrollbars=yes"
-  );
-  if (!win) return;
-
-  const parentLinks = document.querySelectorAll('link[rel="stylesheet"]');
-    parentLinks.forEach((link) => {
+    // 親ウィンドウのCSSをコピー
+    const parentLinks = document.querySelectorAll('link[rel="stylesheet"]');
+      parentLinks.forEach((link) => {
       win.document.head.appendChild(link.cloneNode(true));
     });
 
-   win.document.body.style.margin = "0";
-  win.document.body.innerHTML = ""; // 初期レイアウトを完全削除
+    // body を空にする
+    win.document.body.innerHTML = "";
 
+    // Reactを描画するためのroot要素を作成
+    const root = win.document.createElement("div");
+    root.id = "react-root";
+    win.document.body.appendChild(root);
 
+    // Reactコンポーネントをマウント（0ms遅延でDOM構築完了後にReactをレンダリング）
+    setTimeout(() => {
+      ReactDOM.createRoot(root).render(
+      <MemoPanel token={token} />);
+    }, 0);
 
-
-
-  const root = win.document.createElement("div");
-  root.id = "react-root";
-  root.style.position = "relative"; // ← 横線消えるポイント
-  root.style.inset = "0";        // ← ウィンドウ全体を覆う
-  win.document.body.appendChild(root);
-
-  setTimeout(() => {
-    ReactDOM.createRoot(root).render(
-      <CommentPanel
-        documentGroupId={data?.documentGroupId || 0}
-        token={token}
-      />
-    );
-  }, 0);
-
-  commentWindowRef.current = win;
-};
-
-
-const memoWindowRef = useRef<Window | null>(null);
-
-const openMemoWindow = () => {
-  if (memoWindowRef.current && !memoWindowRef.current.closed) {
-    memoWindowRef.current.focus();
-    return;
-  }
-
-  const win = window.open(
-    "",
-    "Memo",
-    "width=450,height=600,resizable,scrollbars=yes"
-  );
-  if (!win) return;
-
-  const parentLinks = document.querySelectorAll('link[rel="stylesheet"]');
-  parentLinks.forEach((link) => {
-    win.document.head.appendChild(link.cloneNode(true));
-  });
-
-  win.document.body.innerHTML = "";
-
-  const root = win.document.createElement("div");
-  root.id = "react-root";
-  win.document.body.appendChild(root);
-
-  setTimeout(() => {
-    ReactDOM.createRoot(root).render(
-    <MemoPanel token={token} />);
-  }, 0);
-
-  memoWindowRef.current = win;
-};
-
+    // ウィンドウの参照を保存
+    memoWindowRef.current = win;
+  };
 
   // --- キーボード操作 ---
-useEffect(() => {
-  const handleKeydown = (e: KeyboardEvent) => {
-    switch(e.key){
-      case "ArrowRight":
-      case "ArrowDown":
-      case "Enter":
-        setCurrentPage((p) => Math.min(p + 1, numPages));
+  useEffect(() => {
+    const handleKeydown = (e: KeyboardEvent) => {
+      switch(e.key){
+        case "ArrowRight":
+        case "ArrowDown":
+        case "Enter":
+          setCurrentPage((p) => Math.min(p + 1, numPages));
         break;
-      case "ArrowLeft":
-      case "ArrowUp":
-      case "Backspace":
-        setCurrentPage((p) => Math.max(p - 1, 1));
+        
+        case "ArrowLeft":
+        case "ArrowUp":
+        case "Backspace":
+          setCurrentPage((p) => Math.max(p - 1, 1));
         break;
-      case "f":
-      case "F":
-        toggleFullScreen?.();
+        
+        case "f":
+        case "F":
+          toggleFullScreen?.();
         break;
-      case "Escape":
-        if (document.fullscreenElement) document.exitFullscreen();
+      
+        case "Escape":
+          if (document.fullscreenElement) document.exitFullscreen();
         break;
-    }
-  };
-  document.addEventListener("keydown", handleKeydown);
-  return () => document.removeEventListener("keydown", handleKeydown);
-}, [numPages, toggleFullScreen]);
+      }
+    };
+  
+    document.addEventListener("keydown", handleKeydown);
+    return () => document.removeEventListener("keydown", handleKeydown);
+  }, [numPages, toggleFullScreen]);
 
-// --- タッチスワイプ操作（Hammer.js） ---
-useEffect(() => {
-  if (!containerRef.current) return;
+  // --- スワイプ操作（Hammer.js） ---
+  useEffect(() => {
+    if (!containerRef.current) return;
 
-  const el = containerRef.current;
+    const el = containerRef.current;
 
-  // フルスクリーンでない場合は Hammer を作らない
-  if (!isFullscreen) return;
+    // フルスクリーンでない場合は Hammer を作らない
+    if (!isFullscreen) return;
 
-  // 横スワイプのみ許可（縦スクロールはブラウザに任せる）
-  el.style.touchAction = "pan-y";
+    // 横スワイプのみ許可（縦スクロールはブラウザに任せる）
+    el.style.touchAction = "pan-y";
 
-  const hammer = new Hammer(el);
-  const pan = new Hammer.Pan({ direction: Hammer.DIRECTION_HORIZONTAL });
-  hammer.add(pan);
+    // Hammer.js の初期化
+    const hammer = new Hammer(el);
+    const pan = new Hammer.Pan({ direction: Hammer.DIRECTION_HORIZONTAL });
+    hammer.add(pan);
 
-  hammer.on("panend", (e) => {
-    // 50px以上の移動でページ送り
-    if (e.deltaX > 50) setCurrentPage((p) => Math.max(p - 1, 1));
-    if (e.deltaX < -50) setCurrentPage((p) => Math.min(p + 1, numPages));
-  });
+    // スワイプ終了時にページを動かす
+    hammer.on("panend", (e) => {
+      // 50px以上の移動でページ送り
+      if (e.deltaX > 50) setCurrentPage((p) => Math.max(p - 1, 1));
+      if (e.deltaX < -50) setCurrentPage((p) => Math.min(p + 1, numPages));
+    });
 
-  return () => {
-    hammer.destroy();
-    el.style.touchAction = "";
-  };
-}, [numPages, isFullscreen]);
+    // クリーンアップ
+    return () => {
+      hammer.destroy();
+      el.style.touchAction = "";
+    };
+  }, [numPages, isFullscreen]);
 
-
-
-
-  // データ未ロード中
+  // --- データ未ロード中 ---
   if (!data || !selectedPdf) {
     return <div>読み込み中...</div>;
   }
 
   return (
     <div className="relative w-full">
-    <div ref={topRef} className="flex items-center bg-gray-100 shadow space-x-3">
+      {/* ヘッダー */}
+      <div ref={topRef} className="flex items-center bg-gray-100 shadow space-x-3">
+        {/* PDF 選択セレクタ */}
         <PdfSelector
           documents={data.documents}
           selectedPdf={selectedPdf}
           onSelect={(pdf) => {
-          setSelectedPdf(pdf);
-          setCurrentPage(1);
+            setSelectedPdf(pdf);
+            setCurrentPage(1);
 
-          if (role === "presenter") {
-            broadcast(pdf.id, 1);
-          }
-        }}
+            // 発表者ならPDF情報を聴講者に送信
+            if (role === "presenter") {
+              broadcast(pdf.id, 1);
+            }
+          }}
         />
 
-      <PdfControls
-        currentPage={currentPage}
-        numPages={numPages}
-        scale={scale}
-        setCurrentPage={setCurrentPage}
-        setScale={setScale}
-        toggleFullscreen={toggleFullScreen}
-      />
+        {/* ページ送り・拡大縮小・フルスクリーン */}
+        <PdfControls
+          currentPage={currentPage}
+          numPages={numPages}
+          scale={scale}
+          setCurrentPage={setCurrentPage}
+          setScale={setScale}
+          toggleFullscreen={toggleFullScreen}
+        />
 
-      <RoleSelector role={role} setRole={setRole} />
-      <button
-        className="px-3 rounded"
-        onClick={openCommentWindow}><FaComments size={20} color="#4B5563" /></button>
+        {/* ユーザーロール切替 */}
+        <RoleSelector role={role} setRole={setRole} />
       
-      <button
-        className="px-3 rounded"
-        onClick={openMemoWindow}
-      >
-        <FaStickyNote size={20} color="#4B5563" />
-      </button>
+        {/* コメントウィンドウを開くボタン */}
+        <button
+          className="px-3 rounded"
+          onClick={openCommentWindow}>
+          <FaComments size={20} color="#4B5563" />
+        </button>
+      
+        {/* メモウィンドウを開くボタン */}
+        <button
+          className="px-3 rounded"
+          onClick={openMemoWindow}>
+          <FaStickyNote size={20} color="#4B5563" />
+        </button>
 
-      <a
-  href={selectedPdf.url}         // 選択中のPDF
-  download={selectedPdf.name}    // ファイル名を指定
-  className="px-3 rounded"
-  >
-  <FaDownload size={20} color="#4B5563"  />
-</a>
+        {/* 選択中PDFをダウンロード */}
+        <a
+          href={selectedPdf.url}
+          download={selectedPdf.name}
+          className="px-3 rounded"
+        >
+          <FaDownload size={20} color="#4B5563"  />
+        </a>
 
-
-      <a
-        href={selectedPdf.url}
-        target="_blank"
-        className="px-3"
-      >
-        <FaFilePdf size={20} color="#4B5563" />
-      </a>
+        {/* PDFを新しいタブで開く */}
+        <a
+          href={selectedPdf.url}
+          target="_blank"
+          className="px-3"
+        >
+          <FaFilePdf size={20} color="#4B5563" />
+        </a>
       </div>
-      
-      
 
+      {/* PDFビューア本体 */}
       <div ref={containerRef} className="flex justify-center w-full">
         <PdfViewer
           pdf={selectedPdf}
           currentPage={currentPage}
           setCurrentPage={(page) => {
             setCurrentPage(page);
+            // 発表者ならページ情報を送信
             if (role === "presenter") {
               broadcast(selectedPdf.id, page);
             }
@@ -358,14 +389,8 @@ useEffect(() => {
           availableHeight={availableHeight}
           isFullscreen={isFullscreen}
         />
-      
       </div>
-
-      
-      
-        </div>
-    
-    
+    </div>
   );
 };
 
