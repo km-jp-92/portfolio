@@ -38,31 +38,28 @@ const PdfViewer: React.FC<Props> = ({
 }) => {
   const [pdfPageSize, setPdfPageSize] = useState<{ width: number; height: number }>({ width: 1, height: 1 });
 
+  // PDF全体が読み込まれたときにページ数を親に通知
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages); // ← ここで親の setNumPages を呼ぶ
   };
 
+  // ページ単位で実寸の幅・高さを取得して pdfPageSize に保存
   const onPageLoadSuccess = (page: any) => {
     const { width, height } = page.getViewport({ scale: 1 });
     setPdfPageSize({ width, height });
   };
 
+  // スケーリング計算
   const baseScale = Math.min(
-  window.innerWidth / pdfPageSize.width,
-  availableHeight / pdfPageSize.height
-);
+    window.innerWidth / pdfPageSize.width,
+    availableHeight / pdfPageSize.height
+  );
 
-// ボタンでの拡大縮小を反映
-const computedScale = isFullscreen ? baseScale : baseScale * scale;
-
-
-
+  // ボタンでの拡大縮小を反映
+  const computedScale = isFullscreen ? baseScale : baseScale * scale;
 
   return (
     <div className="flex flex-col items-center bg-white rounded-lg shadow-md relative">
-      
-
-      
 
       <div className="overflow-auto w-full h-full">
         <Document

@@ -33,7 +33,6 @@ const PdfSelector: React.FC<Props> = ({ documents, selectedPdf, onSelect }) => {
         ))}
       </select>
 
-      
     </div>
   );
 };
