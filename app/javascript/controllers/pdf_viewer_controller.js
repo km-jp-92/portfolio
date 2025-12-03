@@ -1,3 +1,4 @@
+// このファイルはReactに移行したため現在使用していません（MVPリリース時に使用）
 import { Controller } from "@hotwired/stimulus"
 import { GlobalWorkerOptions, getDocument } from "pdfjs-dist"
 
