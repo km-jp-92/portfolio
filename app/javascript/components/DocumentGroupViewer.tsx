@@ -304,6 +304,23 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
     };
   }, [numPages, isFullscreen]);
 
+  // --- PDFをダウンロードする関数 ---
+  const handleDownload = async () => {
+    if (!selectedPdf?.url) return;
+
+    const response = await fetch(selectedPdf.url, { credentials: "include" });
+    const blob = await response.blob();
+
+    const blobUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = selectedPdf.name || "document.pdf";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(blobUrl);
+  };
+
   // --- データ未ロード中 ---
   if (!data || !selectedPdf) {
     return <div>読み込み中...</div>;
@@ -356,13 +373,12 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
         </button>
 
         {/* 選択中PDFをダウンロード */}
-        <a
-          href={selectedPdf.url}
-          download={selectedPdf.name}
-          className="px-3 rounded"
-        >
-          <FaDownload size={16} color="#4B5563"  />
-        </a>
+        <FaDownload
+          size={16}
+          color="#4B5563"
+          onClick={handleDownload}
+          className="cursor-pointer"
+        />
 
         {/* PDFを新しいタブで開く */}
         <a
