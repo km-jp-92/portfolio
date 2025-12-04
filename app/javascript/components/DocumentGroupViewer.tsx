@@ -390,9 +390,8 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
 
         {/* 右端：ヘルプボタン */}
         <button
-          className="btn btn-outline btn-sm"
+          className="px-3 btn btn-outline btn-sm"
           onClick={() => setIsHelpOpen(true)}
-          className="px-3"
         >
           <FaQuestionCircle size={20} color="#4B5563" />
         </button>
@@ -432,7 +431,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
               </div>
 
               <div className="flex items-start space-x-3">
-                <FaUserFriends size={20} className="text-gray-600 mt-1" />
+                <FaUserFriends size={20} className="text-gray-600" />
                 <div>
                   <h3 className="font-semibold">聴講者</h3>
                   <p className="text-sm text-gray-600">
@@ -454,11 +453,12 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
 
               {/* メモ */}
               <div className="flex items-start space-x-3">
-                <FaStickyNote className="text-gray-600 mt-1" />
+                <FaStickyNote className="text-gray-600 text-3xl" />
                 <div>
-                  <p className="font-semibold">メモウィンドウ</p>
+                  <p className="font-semibold">メモ</p>
                   <p className="text-sm opacity-70">
                     自分専用のメモ入力ウィンドウを開きます。内容はローカルに保存されます。
+                    「AIで整える」を押すと、AI（ChatGPT）によって整えられた文章が出力されます（5秒程度かかります）。
                   </p>
                 </div>
               </div>
