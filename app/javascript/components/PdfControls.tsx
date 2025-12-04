@@ -1,5 +1,5 @@
 import React from "react";
-import { FaExpand, FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { FaExpand, FaCaretLeft, FaCaretRight } from "react-icons/fa";
 
 interface Props {
   currentPage: number;
@@ -13,9 +13,9 @@ interface Props {
 const PdfControls: React.FC<Props> = ({ currentPage, numPages, scale, setCurrentPage, setScale, toggleFullscreen }) => {
   return (
     <div className="flex items-center space-x-6">
-      <button onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}><FaArrowLeft color="#4B5563" /></button>
+      <button onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}><FaCaretLeft color="#4B5563" size={22} /></button>
       <span> {currentPage} / {numPages}</span>
-      <button onClick={() => setCurrentPage(Math.min(numPages, currentPage + 1))}><FaArrowRight color="#4B5563" /></button>
+      <button onClick={() => setCurrentPage(Math.min(numPages, currentPage + 1))}><FaCaretRight color="#4B5563" size={22} /></button>
       <button onClick={() => setScale(scale * 1.1)}>＋</button>
       <button onClick={() => setScale(scale / 1.1)}>−</button>
       {toggleFullscreen && (
