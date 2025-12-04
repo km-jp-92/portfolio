@@ -8,7 +8,7 @@ import CommentPanel from "./CommentPanel";
 import usePdfSync from "../hooks/usePdfSync";
 import MemoPanel from "./MemoPanel";
 import Hammer from "hammerjs";
-import { FaComments, FaStickyNote, FaFilePdf, FaDownload } from "react-icons/fa";
+import { FaExpand, FaChalkboardTeacher, FaUserFriends, FaComments, FaStickyNote, FaFilePdf, FaDownload, FaQuestionCircle } from "react-icons/fa";
 
 interface Document {
   id: number;
@@ -50,6 +50,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   const currentPdfIdRef = useRef(selectedPdf?.id);
   const commentWindowRef = useRef<Window | null>(null);
   const memoWindowRef = useRef<Window | null>(null);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   
   // --- 初期データを fetch ---
   useEffect(() => {
@@ -351,7 +352,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
         <button
           className="px-3 rounded"
           onClick={openMemoWindow}>
-          <FaStickyNote size={20} color="#4B5563" />
+          <FaStickyNote size={18} color="#4B5563" />
         </button>
 
         {/* 選択中PDFをダウンロード */}
@@ -360,7 +361,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
           download={selectedPdf.name}
           className="px-3 rounded"
         >
-          <FaDownload size={20} color="#4B5563"  />
+          <FaDownload size={16} color="#4B5563"  />
         </a>
 
         {/* PDFを新しいタブで開く */}
@@ -371,7 +372,116 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
         >
           <FaFilePdf size={20} color="#4B5563" />
         </a>
+
+        {/* 右端：ヘルプボタン */}
+        <button
+          className="btn btn-outline btn-sm"
+          onClick={() => setIsHelpOpen(true)}
+          className="px-3"
+        >
+          <FaQuestionCircle size={20} color="#4B5563" />
+        </button>
       </div>
+
+      {/* DaisyUI モーダル */}
+      {isHelpOpen && (
+        <dialog open className="modal">
+          <div className="modal-box max-w-xl">
+            <h3 className="font-bold text-lg flex items-center space-x-2 mb-4">
+              <FaQuestionCircle className="text-gray-600" />
+                <span>　各ボタンの説明</span>
+            </h3>
+
+            <div className="space-y-4">
+              {/* フルスクリーン */}
+              <div className="flex items-start space-x-3">
+                <FaExpand className="text-gray-600 mt-1" />
+                <div>
+                  <p className="font-semibold">フルスクリーン表示</p>
+                  <p className="text-sm opacity-70">
+                    PDF の表示領域を最大化し、より見やすく表示します。
+                  </p>
+                </div>
+              </div>
+
+              {/* ロール切替 */}
+              <div className="flex items-start space-x-3">
+                <FaChalkboardTeacher size={24} className="text-gray-600 mt-1" />
+                <div>
+                  <h3 className="font-semibold">発表者</h3>
+                  <p className="text-sm text-gray-600">
+                    発表者になると、自分のページ移動が聴講者にリアルタイムに同期されます。
+                    資料を操作する立場のユーザー向けです。
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <FaUserFriends size={20} className="text-gray-600 mt-1" />
+                <div>
+                  <h3 className="font-semibold">聴講者</h3>
+                  <p className="text-sm text-gray-600">
+                    聴講者モードでは、発表者のページ送りが自動で反映されます。
+                  </p>
+                </div>
+              </div>
+
+              {/* コメント */}
+              <div className="flex items-start space-x-3">
+                <FaComments className="text-gray-600 mt-1" />
+                <div>
+                  <p className="font-semibold">チャット</p>
+                  <p className="text-sm opacity-70">
+                    参加者間のチャット用の別ウィンドウを開きます。
+                  </p>
+                </div>
+              </div>
+
+              {/* メモ */}
+              <div className="flex items-start space-x-3">
+                <FaStickyNote className="text-gray-600 mt-1" />
+                <div>
+                  <p className="font-semibold">メモウィンドウ</p>
+                  <p className="text-sm opacity-70">
+                    自分専用のメモ入力ウィンドウを開きます。内容はローカルに保存されます。
+                  </p>
+                </div>
+              </div>
+
+              {/* ダウンロード */}
+              <div className="flex items-start space-x-3">
+                <FaDownload className="text-gray-600 mt-1" />
+                <div>
+                  <p className="font-semibold">PDF ダウンロード</p>
+                  <p className="text-sm opacity-70">
+                    選択中の PDF ファイルをダウンロードします。
+                  </p>
+                </div>
+              </div>
+
+              {/* 新しいタブ */}
+              <div className="flex items-start space-x-3">
+                <FaFilePdf className="text-gray-600 mt-1" />
+                <div>
+                  <p className="font-semibold">新しいタブで表示</p>
+                  <p className="text-sm opacity-70">
+                    PDF をブラウザの新しいタブで開きます。
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            {/* 閉じるボタン */}
+            <div className="modal-action">
+              <button className="btn" onClick={() => setIsHelpOpen(false)}>
+                閉じる
+              </button>
+            </div>
+          </div>
+
+        </dialog>
+      )}
 
       {/* PDFビューア本体 */}
       <div ref={containerRef} className="flex justify-center w-full">
