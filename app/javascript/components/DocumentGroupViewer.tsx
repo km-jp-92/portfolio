@@ -373,12 +373,11 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
         </button>
 
         {/* 選択中PDFをダウンロード */}
-        <FaDownload
-          size={16}
-          color="#4B5563"
+        <button
           onClick={handleDownload}
-          className="cursor-pointer"
-        />
+          className="cursor-pointer px-3">
+          <FaDownload size={16} color="#4B5563" />
+        </button>
 
         {/* PDFを新しいタブで開く */}
         <a
