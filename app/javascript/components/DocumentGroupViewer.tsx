@@ -456,7 +456,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
               <div className="flex items-start space-x-3">
                 <FaStickyNote className="text-gray-600 mt-1" />
                 <div>
-                  <p className="font-semibold">メモウィンドウ</p>
+                  <p className="font-semibold">メモ</p>
                   <p className="text-sm opacity-70">
                     自分専用のメモ入力ウィンドウを開きます。内容はローカルに保存されます。
                   </p>
