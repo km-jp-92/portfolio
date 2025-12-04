@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.2.1"
+gem "rails", "~> 8.1.1"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
 # Use postgresql as the database for Active Record
@@ -69,7 +69,7 @@ gem "resend"
 
 gem "aws-sdk-s3", require: false
 
-gem "rails-i18n", "~> 7.0"
+gem "rails-i18n", "~> 8.1"
 
 gem "rqrcode", "~> 3.0"
 
