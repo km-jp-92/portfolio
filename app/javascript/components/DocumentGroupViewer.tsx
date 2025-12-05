@@ -529,7 +529,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
       )}
 
       {/* PDFビューア本体 */}
-      <div ref={containerRef} className="flex justify-center w-full">
+      <div ref={containerRef} className="flex w-full">
         <PdfViewer
           pdf={selectedPdf}
           currentPage={currentPage}
