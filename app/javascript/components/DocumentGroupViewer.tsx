@@ -51,6 +51,10 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   const commentWindowRef = useRef<Window | null>(null);
   const memoWindowRef = useRef<Window | null>(null);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
   
   // --- 初期データを fetch ---
   useEffect(() => {
@@ -137,23 +141,49 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
     return () => document.removeEventListener("fullscreenchange", handleChange);
   }, []);
 
-  // --- ヘッダー高さの計算とウィンドウリサイズ対応 ---
+  // --- 初回描画でPDFサイズを合わせる ---
   useEffect(() => {
+    let id: number;
+
     const updateHeight = () => {
-      if (topRef.current) {
-        setHeaderHeight(topRef.current.offsetHeight);
+      if (!topRef.current) return;
+
+      const h = topRef.current.offsetHeight;
+      if (h > 0) {
+        setHeaderHeight(h);
+        clearInterval(id);  // ← これで確定後に停止
       }
     };
 
-    updateHeight(); // 初期値の設定
-    window.addEventListener("resize", updateHeight);
-    return () => window.removeEventListener("resize", updateHeight);
+    id = window.setInterval(updateHeight, 10);
+
+    return () => clearInterval(id);
   }, []);
+
+  // --- ウィンドウサイズ監視 ---
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // --- ウィンドウサイズが変わったらPDF描画領域の高さ更新 ---
+  useEffect(() => {
+    if (topRef.current) {
+      setHeaderHeight(topRef.current.offsetHeight);
+    }
+  }, [windowSize]);
 
   // --- PDFの表示領域をフルスクリーン・通常画面に応じて最適化する変数（PdfViewerで利用） ---
   const availableHeight = isFullscreen
     ? window.innerHeight
-    : window.innerHeight - headerHeight;
+    : windowSize.height - headerHeight;
 
   // --- コメント用の別ウィンドウを開き、そこにCommentPanelをレンダリングする関数 ---
   const openCommentWindow = () => {
@@ -499,7 +529,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
       )}
 
       {/* PDFビューア本体 */}
-      <div ref={containerRef} className="flex justify-center w-full">
+      <div ref={containerRef} className="flex w-full">
         <PdfViewer
           pdf={selectedPdf}
           currentPage={currentPage}
