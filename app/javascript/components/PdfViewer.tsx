@@ -59,9 +59,9 @@ const PdfViewer: React.FC<Props> = ({
   const computedScale = isFullscreen ? baseScale : baseScale * scale;
 
   return (
-    <div className="flex flex-col items-center bg-white rounded-lg shadow-md relative">
+    <div className="overflow-auto w-full h-full bg-white rounded-lg shadow-md relative">
 
-      <div className="overflow-auto w-full h-full">
+      <div className="inline-block">
         <Document
           file={pdf.url}
           options={options}
