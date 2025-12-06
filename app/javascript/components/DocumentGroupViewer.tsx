@@ -357,9 +357,9 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   }
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full text-center">
       {/* ヘッダー */}
-      <div ref={topRef} className="flex items-center bg-gray-100 shadow space-x-3">
+      <div ref={topRef} className="flex justify-center bg-gray-100 shadow space-x-3">
         {/* PDF 選択セレクタ */}
         <PdfSelector
           documents={data.documents}
@@ -413,7 +413,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
         <a
           href={selectedPdf.url}
           target="_blank"
-          className="px-3"
+          className="btn btn-ghost px-3"
         >
           <FaFilePdf size={20} color="#4B5563" />
         </a>
