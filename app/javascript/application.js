@@ -2,6 +2,8 @@
 import "@hotwired/turbo-rails"
 import "./controllers"
 import "./channels"
+import * as ActiveStorage from "@rails/activestorage"
+ActiveStorage.start()
 
 import React from "react";
 import ReactDOM from "react-dom/client";
