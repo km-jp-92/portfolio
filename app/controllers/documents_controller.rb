@@ -13,7 +13,7 @@ class DocumentsController < ApplicationController
   end
 
   def create
-    uploaded_files = document_params[:files] # 複数ファイル
+    uploaded_files = document_params[:files].reject(&:blank?) # 空要素を除外
     @documents = []
     @failed_documents = []
 
@@ -23,6 +23,8 @@ class DocumentsController < ApplicationController
         if doc.save
           @documents << doc
         else
+          # バリデーション失敗時に Blob を削除
+          doc.file.purge if doc.file.attached?
           @failed_documents << doc
         end
       end

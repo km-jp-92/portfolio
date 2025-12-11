@@ -6,10 +6,13 @@ class Document < ApplicationRecord
 
   validate :safe_filename
 
+  validate :unique_filename_within_group
+
   private
 
   def file_presence_type_and_size
-    if file.attached?
+    return unless file.attached?
+
       unless file.content_type.in?(%w[application/pdf])
         errors.add(:file, "はPDFのみアップロード可能です")
       end
@@ -17,9 +20,6 @@ class Document < ApplicationRecord
       if file.blob.byte_size > 20.megabytes
         errors.add(:file, "は20MB以下にしてください")
       end
-    else
-      errors.add(:file, "を選択してください")
-    end
   end
 
   def safe_filename
@@ -28,6 +28,18 @@ class Document < ApplicationRecord
       if filename =~ /[<>\/\\]/
         errors.add(:file, "ファイル名に不正な文字が含まれています")
       end
+    end
+  end
+
+  def unique_filename_within_group
+    return unless file.attached?
+
+    filename = file.filename.to_s
+    if document_group.documents.joins(file_attachment: :blob)
+        .where.not(id: id)
+        .where(active_storage_blobs: { filename: filename })
+        .exists?
+      errors.add(:file, "同じ名前のファイルは既にアップロードされています")
     end
   end
 end
