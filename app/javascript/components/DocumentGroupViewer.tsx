@@ -430,7 +430,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
       {/* DaisyUI モーダル */}
       {isHelpOpen && (
         <dialog open className="modal">
-          <div className="modal-box max-w-xl">
+          <div className="modal-box max-w-xl text-left">
             <h3 className="font-bold text-lg flex items-center space-x-2 mb-4">
               <FaQuestionCircle className="text-gray-600" />
                 <span>　各ボタンの説明</span>
