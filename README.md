@@ -120,3 +120,5 @@
 [![ER図](https://i.gyazo.com/e6b5ad025733f1393a4e230b1c722e0a.png)](https://gyazo.com/e6b5ad025733f1393a4e230b1c722e0a)
   
   
+## 画面遷移図
+[画面遷移図（Figmaへのリンク）](https://www.figma.com/design/hEMEl2NMbi86g6tvFbVLcY/%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?node-id=0-1&p=f&t=eId5hsnLZXJZyMQ5-0)
