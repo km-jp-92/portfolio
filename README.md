@@ -86,8 +86,7 @@
   - PDFアップロード画面については、Active Storage のダイレクトアップロードは Rails フォームビューと  
   密接に結びついているため、Railsビューに自然に統合できる Stimulus を採用しました。  
 - **React**（PDF閲覧画面）  
-  - PDF閲覧画面については、リアルタイム機能（PDF同期・チャット）、メモ機能、フルスクリーン、拡大・縮小、ページ送りなど、  
-  １ページ内に管理すべき状態が多いため、Reactを採用しました。  
+  - PDF閲覧画面については、リアルタイム機能（PDF同期・チャット）、メモ機能、フルスクリーン、拡大・縮小、ページ送りなど、１ページ内に管理すべき状態が多いため、Reactを採用しました。  
   - RailsのビューにReactをマウントしています。
 
 ### CSSフレームワーク
@@ -107,6 +106,7 @@
 - **AWS EC2**  
   - AWSの中ではおそらく一番安価なため  
   - EC2 に Rails・PostgreSQL・Redis・Nginx をまとめて構築  
+  （ローカルで Docker イメージをビルドし、ECR に push、EC2 から ECR に pull してコンテナを起動）  
   
   
 ## 🔒 セキュリティ
@@ -120,5 +120,3 @@
 [![ER図](https://i.gyazo.com/e6b5ad025733f1393a4e230b1c722e0a.png)](https://gyazo.com/e6b5ad025733f1393a4e230b1c722e0a)
   
   
-## 画面遷移図
-[画面遷移図（Figmaへのリンク）](https://www.figma.com/design/hEMEl2NMbi86g6tvFbVLcY/%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?node-id=0-1&p=f&t=eId5hsnLZXJZyMQ5-0)
