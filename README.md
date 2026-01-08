@@ -68,7 +68,7 @@
 | カテゴリ | 技術 |
 | :--- | :--- |
 | バックエンド | Ruby 3.3.6 / Ruby on Rails 7.2.3 |
-| フロントエンド | Stimulus 3.2.2 / React 19.2.0 |
+| フロントエンド | Stimulus 3.2.2 / React 19.2.0 / Typescript 5.9.3 |
 | CSSフレームワーク | Tailwindcss + daisyUI |
 | データベース | PostgreSQL |
 | ファイルサーバー | AWS S3 |
