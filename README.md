@@ -73,6 +73,7 @@
 | データベース | PostgreSQL |
 | ファイルサーバー | AWS S3 |
 | デプロイ | AWS EC2 |
+| CI/CD | Github Actions |
   
   
 ## 技術選定理由
