@@ -108,7 +108,7 @@
 - **AWS EC2**  
   - AWSの中ではコストを抑えられるため採用  
   - EC2 上に Rails / PostgreSQL / Redis / Nginx を構築  
-  - ローカルで Docker イメージをビルド → ECR に push → EC2 から pull して起動  
+  - GithubActionsによるCDを実装し、mainブランチへのマージ時にはDockerイメージをAWS ECRにプッシュしてEC2に自動デプロイ  
   
   
 ## セキュリティ
