@@ -413,7 +413,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
         <a
           href={selectedPdf.url}
           target="_blank"
-          className="btn btn-ghost px-3"
+          className="btn btn-ghost px-3" rel="noreferrer"
         >
           <FaFilePdf size={20} color="#4B5563" />
         </a>

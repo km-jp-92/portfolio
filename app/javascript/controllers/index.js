@@ -4,14 +4,5 @@
 
 import { application } from "./application"
 
-import HelloController from "./hello_controller"
-application.register("hello", HelloController)
-
-import PdfSelectorController from "./pdf_selector_controller"
-application.register("pdf-selector", PdfSelectorController)
-
 import PdfUploadController from "./pdf_upload_controller"
 application.register("pdf-upload", PdfUploadController)
-
-import PdfViewerController from "./pdf_viewer_controller"
-application.register("pdf-viewer", PdfViewerController)
