@@ -69,8 +69,8 @@
 | :--- | :--- |
 | バックエンド | Ruby 3.3.6 / Ruby on Rails 7.2.3 |
 | フロントエンド | Stimulus 3.2.2 / React 19.2.0 / Typescript 5.9.3 |
-| CSSフレームワーク | Tailwindcss + daisyUI |
-| データベース | PostgreSQL |
+| CSSフレームワーク | Tailwind CSS 3.4.17 + daisyUI 5.5.5 |
+| データベース | PostgreSQL 18.1 |
 | ファイルサーバー | AWS S3 |
 | デプロイ | AWS EC2 |
 | CI/CD | Github Actions |

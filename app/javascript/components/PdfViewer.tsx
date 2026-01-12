@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
+
+import type { PDFPageProxy } from "pdfjs-dist";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
@@ -44,7 +46,7 @@ const PdfViewer: React.FC<Props> = ({
   };
 
   // ページ単位で実寸の幅・高さを取得して pdfPageSize に保存
-  const onPageLoadSuccess = (page: any) => {
+  const onPageLoadSuccess = (page: PDFPageProxy) => {
     const { width, height } = page.getViewport({ scale: 1 });
     setPdfPageSize({ width, height });
   };
