@@ -88,6 +88,13 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
     currentPdfIdRef,
   });
 
+  // --- 発表者が聴講者にページを送る ---
+  useEffect(() => {
+    if (role === "presenter") {
+      broadcast(selectedPdf.id, currentPage);
+    }
+  }, [selectedPdf, currentPage]);
+
   // --- 聴講者が発表者のページを受け取る ---
   useEffect(() => {
     if (!message) return;
@@ -367,11 +374,6 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
           onSelect={(pdf) => {
             setSelectedPdf(pdf);
             setCurrentPage(1);
-
-            // 発表者ならPDF情報を聴講者に送信
-            if (role === "presenter") {
-              broadcast(pdf.id, 1);
-            }
           }}
         />
 
@@ -533,13 +535,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
         <PdfViewer
           pdf={selectedPdf}
           currentPage={currentPage}
-          setCurrentPage={(page) => {
-            setCurrentPage(page);
-            // 発表者ならページ情報を送信
-            if (role === "presenter") {
-              broadcast(selectedPdf.id, page);
-            }
-          }}
+          setCurrentPage={setCurrentPage}
           scale={scale}
           setNumPages={setNumPages}
           availableHeight={availableHeight}

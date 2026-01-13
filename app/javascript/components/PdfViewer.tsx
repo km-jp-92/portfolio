@@ -32,7 +32,6 @@ interface Props {
 const PdfViewer: React.FC<Props> = ({
   pdf,
   currentPage,
-  setCurrentPage,
   scale,
   setNumPages,
   availableHeight,
@@ -69,11 +68,7 @@ const PdfViewer: React.FC<Props> = ({
           options={options}
           onLoadSuccess={onDocumentLoadSuccess}
         >
-          <Page pageNumber={currentPage} scale={computedScale} onLoadSuccess={onPageLoadSuccess}
-            onRenderSuccess={() => {
-            // PdfViewer 内部のページ更新 → 親へ伝達
-            setCurrentPage(currentPage);
-          }}/>
+          <Page pageNumber={currentPage} scale={computedScale} onLoadSuccess={onPageLoadSuccess}/>
         </Document>
       </div>
     </div>

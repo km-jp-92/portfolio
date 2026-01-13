@@ -65,11 +65,7 @@ class DocumentsController < ApplicationController
 
     @comments = @document_group.comments.order(created_at: :asc)
 
-    @document = if params[:document_id]
-                  @document_group.documents.find(params[:document_id])
-    else
-                  @documents.first
-    end
+    @document = @documents.first
 
     render json: {
     documentGroupId: @document_group.id,
@@ -97,32 +93,45 @@ class DocumentsController < ApplicationController
     text = params[:content].to_s
 
     system_prompt = <<~PROMPT
-    あなたは優秀な文章整理アシスタントです。ユーザーが入力したメモを読みやすく整形してください。以下のルールに従ってください：
+      あなたは優秀な文章整理アシスタントです。ユーザーが入力したメモを読みやすく整形してください。以下のルールに従ってください：
 
-    1. 改行や段落を適切に整える
-    2. 箇条書きはハイフン (-) または番号で整列
-    3. 長すぎる文は短くまとめる
-    4. 日付や時間は統一フォーマットに整える
-    5. 誤字脱字を修正する
-    6. 文の意味を変えずに、読みやすさを優先する
+      1. 改行や段落を適切に整える
+      2. 箇条書きはハイフン (-) または番号で整列
+      3. 長すぎる文は短くまとめる
+      4. 日付や時間は統一フォーマットに整える
+      5. 誤字脱字を修正する
+      6. 文の意味を変えずに、読みやすさを優先する
 
-  PROMPT
+    PROMPT
 
     client = OpenAI::Client.new(access_token: ENV["OPENAI_API_KEY"])
 
-    response = client.chat(
-      parameters: {
-        model: "gpt-4.1-mini",
-        messages: [
-          { role: "system", content: system_prompt },
-          { role: "user", content: text }
-        ]
-      }
-    )
+    begin
+      response = client.chat(
+        parameters: {
+          model: "gpt-4.1-mini",
+          messages: [
+            { role: "system", content: system_prompt },
+            { role: "user", content: text }
+          ]
+        }
+      )
 
-    formatted = response.dig("choices", 0, "message", "content").to_s
+      formatted = response.dig("choices", 0, "message", "content").to_s
 
-    render json: { formatted: formatted }
+      if formatted.blank?
+        render json: { error: "AIが返答できませんでした" }, status: :bad_gateway
+      else
+        render json: { formatted: formatted }
+      end
+
+    rescue OpenAI::Error => e
+      Rails.logger.error("OpenAI API error: #{e.message}")
+      render json: { error: "AIサービスに接続できませんでした" }, status: :bad_gateway
+    rescue StandardError => e
+      Rails.logger.error("Unexpected error in format_memo: #{e.message}")
+      render json: { error: "予期せぬエラーが発生しました" }, status: :internal_server_error
+    end
   end
 
   private
@@ -149,48 +158,43 @@ class DocumentsController < ApplicationController
 
   # パスワード認証
   def authenticate_group_password
-    if session[:authenticated_document_group_id] == @document_group.id
-      # すでに認証済み
-      return true
-    end
+    return if session[:authenticated_document_group_id] == @document_group.id
 
-    if params[:password] && @document_group.authenticate(params[:password])
-      # 認証成功
-      session[:authenticated_document_group_id] = @document_group.id
-      redirect_to documents_path(token: @document_group.upload_token)
-    else
-      # 認証フォーム表示
-      if params.key?(:password)
-        if params[:password].blank?
-          @error = "パスワードを入力してください"
-        elsif !@document_group.authenticate(params[:password])
-          @error = "パスワードが違います"
-        end
+    password = params[:password]
+
+    if password.present?
+      if @document_group.authenticate(password)
+        session[:authenticated_document_group_id] = @document_group.id
+        redirect_to documents_path(token: @document_group.upload_token)
+        return
+      else
+        @error = "パスワードが違います"
       end
-
-      render :password_form, status: :unprocessable_entity
+    elsif params.key?(:password)
+      @error = "パスワードを入力してください"
     end
+
+    render :password_form, status: :unprocessable_entity
   end
 
   def authenticate_viewer_password
-    if session[:authenticated_viewer_group_id] == @document_group.id
-      return true
-    end
+    return if session[:authenticated_viewer_group_id] == @document_group.id
 
-    if params[:password] && @document_group.authenticate(params[:password])
-      session[:authenticated_viewer_group_id] = @document_group.id
-      redirect_to viewer_documents_path(token: @document_group.view_token)
-    else
-      if params.key?(:password)
-        if params[:password].blank?
-          @error = "パスワードを入力してください"
-        elsif !@document_group.authenticate(params[:password])
-          @error = "パスワードが違います"
-        end
+    password = params[:password]
+
+    if password.present?
+      if @document_group.authenticate(password)
+        session[:authenticated_viewer_group_id] = @document_group.id
+        redirect_to viewer_documents_path(token: @document_group.view_token)
+        return
+      else
+        @error = "パスワードが違います"
       end
-
-      render :viewer_password_form, status: :unprocessable_entity
+    elsif params.key?(:password)
+      @error = "パスワードを入力してください"
     end
+
+    render :viewer_password_form, status: :unprocessable_entity
   end
 
   def document_params
