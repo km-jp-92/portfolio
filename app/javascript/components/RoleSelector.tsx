@@ -23,7 +23,7 @@ const RoleSelector: React.FC<Props> = ({ role, setRole }) => {
         }}
         className={`px-3 py-1 rounded ${
           role === "presenter"
-            ? "bg-blue-500 text-white"
+            ? "bg-red-500 text-white"
             : "bg-gray-100 text-gray-600"
         }`}
       >
@@ -33,7 +33,7 @@ const RoleSelector: React.FC<Props> = ({ role, setRole }) => {
       <button
         onClick={() => setRole(role === "audience" ? null : "audience")}
         className={`px-3 py-1 rounded ${
-          role === "audience" ? "bg-green-500 text-white" : "bg-gray-100 text-gray-600"
+          role === "audience" ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-600"
         }`}
       >
         <FaUserFriends size={20} />
