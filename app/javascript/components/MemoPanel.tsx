@@ -69,7 +69,7 @@ const MemoPanel: React.FC = ({ token }) => {
 
       <div className="flex space-x-3 justify-center">
         <button
-          className="px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+          className="px-5 py-2 bg-red-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
           onClick={formatMemo}
           disabled={loading}
         >
@@ -77,7 +77,7 @@ const MemoPanel: React.FC = ({ token }) => {
         </button>
 
         <button
-          className="px-5 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          className="px-5 py-2 bg-blue-500 text-white rounded hover:bg-green-600"
           onClick={downloadMemo}
         >
           ダウンロード

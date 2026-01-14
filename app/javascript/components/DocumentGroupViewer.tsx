@@ -130,7 +130,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
   // --- 現在表示中のPDFのIDをrefにコピーして保持 ---
   useEffect(() => { currentPdfIdRef.current = selectedPdf?.id; }, [selectedPdf]);
 
-  // --- フルスクリーンの ON/OFF を切り替える関数 ---
+  // --- React からフルスクリーンを ON/OFF する関数 ---
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
       containerRef.current?.requestFullscreen();
@@ -139,7 +139,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
     }
   };
 
-  // --- ユーザーがF11やESCでフルスクリーンを切り替えた場合もstateが同期される ---
+  // --- ブラウザ側のフルスクリーン状態を React に伝える ---
   useEffect(() => {
     const handleChange = () => {
       setIsFullscreen(Boolean(document.fullscreenElement));
