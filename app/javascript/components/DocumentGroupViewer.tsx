@@ -67,10 +67,7 @@ const DocumentGroupViewer: React.FC<DocumentGroupViewerProps> = ({ token }) => {
         setData(json);
 
         // 初期PDFをセット
-        const initialPdf =
-          json.documents.find((d) => d.id === json.currentDocumentId) ||
-          json.documents[0] ||
-          null;
+        const initialPdf = json.documents[0] || null;
         setSelectedPdf(initialPdf);
       })
       .catch((err) => console.error("Failed to fetch initial data:", err));
