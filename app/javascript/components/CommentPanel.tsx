@@ -1,18 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import useCommentSync from "../hooks/useCommentSync";
+import type { Comment } from "../hooks/useCommentSync";
 
 interface CommentPanelProps {
   documentGroupId: number;
   token: string;
   initialComments?: Comment[];
-}
-
-interface Comment {
-  id: number;
-  content: string;
-  likes_count: number;
-  created_at?: string;
 }
 
 interface FormData {
